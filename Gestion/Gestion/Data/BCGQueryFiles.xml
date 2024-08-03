@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Sistema: Control de Gestion Documental 			Documento: Database Query Strings    -->
+<!-- Fecha  : 03/Febrero/2006      				Autor    : Arturo Sosa García        -->
+<queries>
+  <query name="qryDocumentsByStatus">
+    <source>
+      <![CDATA[ 
+		Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte
+			From ( 
+					Select SOF_Documento.Documento_ID, SOF_documento.asunto, SOF_documento.resumen, SOF_documento.usuario_id, 
+							SOF_documento.volante, SOF_Documento.Tipo_Remitente, SOF_Documento.Referencia, 
+							SOF_Documento.Fecha_Documento_Fuente, SOF_Documento.Fecha_Elaboracion, SOF_documento.documento_bis_id, 
+							SOF_Remitente_Area.Area RemitenteArea, SOF_Remitente_Titular.Nombre RemitenteNombre, 
+							SOF_documento.destinatario_area_id DestinatarioAreaID,  SOF_destinatario_area.area 	DestinatarioArea, 
+							SOF_destinatario_titular.nombre DestinatarioNombre, SOF_documento.estatus StatusVolante  
+					From 	Sof_Documento, 
+							(Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, 
+							(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular, 
+							(Select distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area , 
+							Hint_v_Usuarios Sof_Remitente_Titular   
+					Where   1=1
+					AND	Sof_documento.DESTINATARIO_AREA_ID in (<@ADDRESSEEID@>)
+					AND 	Sof_documento.Estatus LIKE '<@STATUS@>'
+					AND 	Sof_documento.Tipo_Documento_Id LIKE <@DOCUMENTTYPE@>
+					AND 	Sof_documento.Tipo_Remitente = 'I'  
+					AND 	sof_remitente_area.clave_area(+) = sof_documento.Remitente_Area_ID  
+					AND 	sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_ID 
+					AND 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID 
+					AND 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+					AND 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+					AND 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+					UNION ALL  
+					Select Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, 
+							sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, 
+							Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, 
+							sof_documento.documento_bis_id, Sof_Remitente_Externo.Dependencia RemitenteArea, 
+							Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, sof_documento.destinatario_area_id destinatarioAreaId, 
+							sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, 
+							sof_documento.estatus StatusVolante  
+					From 	Sof_Documento, 
+							(Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, 
+							(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular,  
+							Sof_Remitente_Externo ,  
+							Sof_Remitente_Externo_titular    
+					Where 	1=1
+					And		Sof_documento.DESTINATARIO_AREA_ID in (<@ADDRESSEEID@>) 
+					And 	Sof_documento.Estatus LIKE '<@STATUS@>'
+					And 	Sof_documento.Tipo_Documento_Id LIKE <@DOCUMENTTYPE@>
+					And 	Sof_documento.Tipo_Remitente = 'E' 
+					And 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+					And 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID 
+					And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID 
+					And 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+					and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>')
+					and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')  ) SD, sof_documento_relacionado
+		WHERE sof_documento_relacionado.documento_id = sd.documento_id(+)
+		and   sof_documento_relacionado.estatus = sd.statusvolante
+		order by sd.destinatarioAreaId, sd.volante
+      ]]>
+    </source>
+  </query>
+
+  <query name="qryDocumentsByArea">
+    <source>
+      <![CDATA[ 
+
+	Select 	sd.*, SDT.Documento_ID, SDT.TurnadoAreaId, SDT.TurnadoArea, SDT.TurnadoNombre, Decode(sdt.Estatus,0,'Sin/Abrir',1,'Trámite',2,'Returnado','3','Concluido', 'Sin/Turnar') StatusReceive, 
+		sdt.Instruccion 
+	From ( Select 	Sof_documento.Documento_id,
+			Sof_Documento.Asunto, 
+			Sof_Documento.Resumen, 
+			Sof_Documento.Usuario_ID, 
+			Sof_Documento.Volante, 
+			Sof_Documento.Tipo_Remitente, 
+			Sof_Documento.Referencia, 
+			Sof_Documento.Fecha_Documento_Fuente, 
+			Sof_Documento.Fecha_Elaboracion, 
+			Sof_Documento.Documento_Bis_Id, 
+			Sof_Remitente_Area.Area RemitenteArea, 
+			Sof_Remitente_Titular.Nombre RemitenteNombre, 
+			Sof_Documento.Destinatario_Area_ID DestinatarioAreaId, 
+			Sof_Destinatario_Area.Area DestinatarioArea, 
+			Sof_Destinatario_Titular.Nombre DestinatarioNombre, 
+			Sof_Documento.Estatus StatusVolante  
+		From 	Sof_Documento, 
+			Sof_Tipo_Documento, 
+			(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Destinatario_Area, 
+			Hint_v_Usuarios Sof_Destinatario_Titular, 
+			(Select Distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area, 
+			hint_v_usuarios sof_remitente_titular  
+		Where 	Sof_Documento.Usuario_ID in (<@USERSID@>)
+		And Sof_documento.Destinatario_area_id <@SENDAREAID@>
+		and 	Sof_Tipo_Documento.Tipo_Documento_ID = Sof_Documento.Tipo_Documento_ID 
+		and 	Sof_Documento.Estatus  like '<@STATUSDOCUMENT@>' 
+		and 	sof_Documento.Tipo_Remitente = 'I' 
+		and 	Sof_Remitente_Area.clave_area(+) = Sof_Documento.Remitente_Area_ID 
+		and 	Sof_Remitente_Titular.ID_Usuario(+) = Sof_Documento.Remitente_ID 
+		and 	Sof_Destinatario_Area.Clave_Area(+) = Sof_Documento.Destinatario_Area_ID  
+		and 	sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+		and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+		and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+		and 	( lower(sof_Documento.asunto) like '%<@TEXTSEARCH@>%' or lower(sof_Documento.resumen) like '%<@TEXTSEARCH@>%')
+		UNION ALL  
+		Select 	Sof_documento.Documento_id, 
+			Sof_Documento.Asunto, 
+			Sof_Documento.Resumen, 
+			Sof_Documento.Usuario_ID, 
+			Sof_Documento.Volante, 
+			Sof_Documento.Tipo_Remitente, 
+			Sof_Documento.Referencia, 
+			Sof_Documento.Fecha_Documento_Fuente, 
+			Sof_Documento.Fecha_Elaboracion, 
+			Sof_Documento.Documento_Bis_Id,  
+			Sof_Remitente_Externo.dependencia remitenteArea,  
+			Sof_Remitente_Externo_Titular.nombre remitenteNombre, 
+			Sof_Documento.Destinatario_Area_ID DestinatarioAreaId, 
+			Sof_Destinatario_Area.Area DestinatarioArea, 
+			Sof_Destinatario_Titular.Nombre DestinatarioNombre, 
+			Sof_Documento.Estatus StatusVolante  
+		From 	Sof_Documento, 
+			Sof_Tipo_Documento, 
+			(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Destinatario_Area, 
+			Hint_v_Usuarios Sof_Destinatario_Titular, 
+			sof_remitente_externo , 
+			sof_remitente_externo_titular  
+		Where 	Sof_Documento.Usuario_ID in (<@USERSID@>)
+		and 	Sof_Tipo_Documento.Tipo_Documento_ID = Sof_Documento.Tipo_Documento_ID 
+		and 	Sof_Documento.Estatus  like '<@STATUSDOCUMENT@>' 
+		and 	sof_Documento.Tipo_Remitente = 'E' 
+		and 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+		and 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID 
+		and 	Sof_Destinatario_Area.Clave_Area(+) = Sof_Documento.Destinatario_Area_ID  
+		and 	sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+		and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+		and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+		and 	( lower(sof_Documento.asunto) like '%<@TEXTSEARCH@>%' or lower(sof_Documento.resumen) like '%<@TEXTSEARCH@>%')  ) 
+		SD,
+		(select documento_turnar_id, documento_id, destinatario_id,  estatus, instruccion, TurnadoAreaId, TurnadoArea, TurnadoNombre
+		  from 	(
+			SELECT 	documento_turnar_id,
+			 	sof_documento_turnar.documento_id, 
+			 	sof_documento_turnar.destinatario_id,
+				sof_documento_turnar.estatus,
+				sof_documento_turnar.instruccion,
+				sof_documento_turnar.destinatario_area_id TurnadoAreaId,
+				Sof_Turnado_Area.Area TurnadoArea,
+				Sof_Turnado_Titular.Nombre TurnadoNombre
+			FROM 
+				sof_documento_turnar, 
+				(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Turnado_Area, 
+				Hint_v_Usuarios SOF_Turnado_Titular,
+				sof_documento
+			WHERE 	1=1
+			AND 	sof_documento.usuario_id in (<@USERSID@>)
+			AND 	sof_documento_turnar.documento_id = sof_documento.documento_id
+			AND 	sof_documento_turnar.Eliminado = '0'
+			<@TURNARSTATUS@>
+			AND 	Sof_Turnado_Area.Clave_Area(+) = sof_documento_turnar.Destinatario_Area_ID 
+			AND 	Sof_Turnado_Titular.ID_Usuario(+) = sof_documento_turnar.Destinatario_ID  
+			AND 	Sof_Documento_Turnar.Destinatario_Area_ID like '<@ADDRESSEEID@>'
+			UNION ALL
+			SELECT 	ccpara_id,               
+			SOF_CCPARA.documento_id,
+			SOF_CCPARA.destinatario_id,
+			SOF_CCPARA.estatus,            
+			('Para su Conocimiento') instruccion,
+			SOF_CCPARA.destinatario_area_id,
+			SOF_CCPARA_Area.Area, 
+			SOF_CCPARA_Titular.Nombre
+			FROM  	SOF_ccpara, 
+				(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_ccpara_Area, 
+				Hint_v_Usuarios SOF_ccpara_Titular,
+				sof_documento
+			WHERE 	1=1
+			AND 	sof_documento.usuario_id in (<@USERSID@>) 
+			AND 	sof_ccpara.documento_id = sof_documento.documento_id
+			AND 	sof_ccpara.Eliminado = '0'  
+			<@CCPARASTATUS@>  
+			AND 	Sof_ccpara_Area.Clave_Area(+) = sof_ccpara.Destinatario_Area_ID 
+			AND 	Sof_ccpara_Titular.ID_Usuario(+) = sof_ccpara.Destinatario_ID  
+			AND 	Sof_ccpara.Destinatario_Area_ID like '<@ADDRESSEEID@>'
+		) ) SDT
+	WHERE SD.documento_id = SDT.documento_id
+	order by turnadoAreaId, volante
+
+      ]]>
+    </source>
+  </query>
+
+  <query name="qryDocumentsByTurnados">
+    <source>
+      <![CDATA[ 
+
+	Select 	sd.*, SDT.Documento_ID, SDT.TurnadoAreaId, SDT.TurnadoArea, SDT.TurnadoNombre, Decode(sdt.Estatus,0,'Sin/Abrir',1,'Trámite',2,'Returnado','3','Concluido', 'Sin/Turnar') StatusReceive, 
+		sdt.Instruccion 
+	From ( Select 	Sof_documento.Documento_id,
+			Sof_Documento.Asunto, 
+			Sof_Documento.Resumen, 
+			Sof_Documento.Usuario_ID, 
+			Sof_Documento.Volante, 
+			Sof_Documento.Tipo_Remitente, 
+			Sof_Documento.Referencia, 
+			Sof_Documento.Fecha_Documento_Fuente, 
+			Sof_Documento.Fecha_Elaboracion, 
+			Sof_Documento.Documento_Bis_Id, 
+			Sof_Remitente_Area.Area RemitenteArea, 
+			Sof_Remitente_Titular.Nombre RemitenteNombre, 
+			Sof_Documento.Destinatario_Area_ID DestinatarioAreaId, 
+			Sof_Destinatario_Area.Area DestinatarioArea, 
+			Sof_Destinatario_Titular.Nombre DestinatarioNombre, 
+			Sof_Documento.Estatus StatusVolante  
+		From 	Sof_Documento, 
+			Sof_Tipo_Documento, 
+			(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Destinatario_Area, 
+			Hint_v_Usuarios Sof_Destinatario_Titular, 
+			(Select Distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area, 
+			hint_v_usuarios sof_remitente_titular  
+		Where 	Sof_Documento.Usuario_ID in (<@USERSID@>)
+		And 	Sof_documento.Destinatario_area_id <@SENDAREAID@>
+		and 	Sof_Tipo_Documento.Tipo_Documento_ID = Sof_Documento.Tipo_Documento_ID 
+		and 	Sof_Documento.Estatus  like '<@STATUSDOCUMENT@>' 
+		and 	sof_Documento.Tipo_Remitente = 'I' 
+		and 	Sof_Remitente_Area.clave_area(+) = Sof_Documento.Remitente_Area_ID 
+		and 	Sof_Remitente_Titular.ID_Usuario(+) = Sof_Documento.Remitente_ID 
+		and 	Sof_Destinatario_Area.Clave_Area(+) = Sof_Documento.Destinatario_Area_ID  
+		and 	sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+		and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+		and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+		and 	( lower(sof_Documento.asunto) like '%<@TEXTSEARCH@>%' or lower(sof_Documento.resumen) like '%<@TEXTSEARCH@>%')
+		UNION ALL  
+		Select 	Sof_documento.Documento_id, 
+			Sof_Documento.Asunto, 
+			Sof_Documento.Resumen, 
+			Sof_Documento.Usuario_ID, 
+			Sof_Documento.Volante, 
+			Sof_Documento.Tipo_Remitente, 
+			Sof_Documento.Referencia, 
+			Sof_Documento.Fecha_Documento_Fuente, 
+			Sof_Documento.Fecha_Elaboracion, 
+			Sof_Documento.Documento_Bis_Id,  
+			Sof_Remitente_Externo.dependencia remitenteArea,  
+			Sof_Remitente_Externo_Titular.nombre remitenteNombre, 
+			Sof_Documento.Destinatario_Area_ID DestinatarioAreaId, 
+			Sof_Destinatario_Area.Area DestinatarioArea, 
+			Sof_Destinatario_Titular.Nombre DestinatarioNombre, 
+			Sof_Documento.Estatus StatusVolante  
+		From 	Sof_Documento, 
+			Sof_Tipo_Documento, 
+			(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Destinatario_Area, 
+			Hint_v_Usuarios Sof_Destinatario_Titular, 
+			sof_remitente_externo , 
+			sof_remitente_externo_titular  
+		Where 	Sof_Documento.Usuario_ID in (<@USERSID@>)
+		and 	Sof_Tipo_Documento.Tipo_Documento_ID = Sof_Documento.Tipo_Documento_ID 
+		and 	Sof_Documento.Estatus  like '<@STATUSDOCUMENT@>' 
+		and 	sof_Documento.Tipo_Remitente = 'E' 
+		and 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+		and 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID 
+		and 	Sof_Destinatario_Area.Clave_Area(+) = Sof_Documento.Destinatario_Area_ID  
+		and 	sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+		and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+		and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+		and 	( lower(sof_Documento.asunto) like '%<@TEXTSEARCH@>%' or lower(sof_Documento.resumen) like '%<@TEXTSEARCH@>%')  ) 
+		SD,
+		(select documento_turnar_id, documento_id, destinatario_id,  estatus, instruccion, TurnadoAreaId, TurnadoArea, TurnadoNombre
+		  from 	(
+			SELECT 	documento_turnar_id,
+			 	sof_documento_turnar.documento_id, 
+			 	sof_documento_turnar.destinatario_id,
+				sof_documento_turnar.estatus,
+				sof_documento_turnar.instruccion,
+				sof_documento_turnar.destinatario_area_id TurnadoAreaId,
+				Sof_Turnado_Area.Area TurnadoArea,
+				Sof_Turnado_Titular.Nombre TurnadoNombre
+			FROM 
+				sof_documento_turnar, 
+				(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Turnado_Area, 
+				Hint_v_Usuarios SOF_Turnado_Titular,
+				sof_documento
+			WHERE 	1=1
+			AND 	sof_documento.usuario_id in (<@USERSID@>)
+			AND 	sof_documento_turnar.documento_id = sof_documento.documento_id
+			AND 	sof_documento_turnar.Eliminado = '0'
+			<@TURNARSTATUS@>
+			AND 	Sof_Turnado_Area.Clave_Area(+) = sof_documento_turnar.Destinatario_Area_ID 
+			AND 	Sof_Turnado_Titular.ID_Usuario(+) = sof_documento_turnar.Destinatario_ID  
+			AND 	Sof_Documento_Turnar.Destinatario_Area_ID like '<@ADDRESSEEID@>'
+		) ) SDT
+	WHERE SD.documento_id = SDT.documento_id
+	order by turnadoAreaId, volante
+
+      ]]>
+    </source>
+   </query>
+
+  <query name="qryDocumentsByCCPara">
+    <source>
+      <![CDATA[ 
+
+	Select 	sd.*, SDT.Documento_ID, SDT.TurnadoAreaId, SDT.TurnadoArea, SDT.TurnadoNombre, Decode(sdt.Estatus,0,'Sin/Abrir',1,'Trámite',2,'Returnado','3','Concluido', 'Sin/Turnar') StatusReceive, 
+		sdt.Instruccion 
+	From ( Select 	Sof_documento.Documento_id,
+			Sof_Documento.Asunto, 
+			Sof_Documento.Resumen, 
+			Sof_Documento.Usuario_ID, 
+			Sof_Documento.Volante, 
+			Sof_Documento.Tipo_Remitente, 
+			Sof_Documento.Referencia, 
+			Sof_Documento.Fecha_Documento_Fuente, 
+			Sof_Documento.Fecha_Elaboracion, 
+			Sof_Documento.Documento_Bis_Id, 
+			Sof_Remitente_Area.Area RemitenteArea, 
+			Sof_Remitente_Titular.Nombre RemitenteNombre, 
+			Sof_Documento.Destinatario_Area_ID DestinatarioAreaId, 
+			Sof_Destinatario_Area.Area DestinatarioArea, 
+			Sof_Destinatario_Titular.Nombre DestinatarioNombre, 
+			Sof_Documento.Estatus StatusVolante  
+		From 	Sof_Documento, 
+			Sof_Tipo_Documento, 
+			(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Destinatario_Area, 
+			Hint_v_Usuarios Sof_Destinatario_Titular, 
+			(Select Distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area, 
+			hint_v_usuarios sof_remitente_titular  
+		Where 	Sof_Documento.Usuario_ID in (<@USERSID@>)
+		And Sof_documento.Destinatario_area_id <@SENDAREAID@>
+		and 	Sof_Tipo_Documento.Tipo_Documento_ID = Sof_Documento.Tipo_Documento_ID 
+		and 	Sof_Documento.Estatus  like '<@STATUSDOCUMENT@>' 
+		and 	sof_Documento.Tipo_Remitente = 'I' 
+		and 	Sof_Remitente_Area.clave_area(+) = Sof_Documento.Remitente_Area_ID 
+		and 	Sof_Remitente_Titular.ID_Usuario(+) = Sof_Documento.Remitente_ID 
+		and 	Sof_Destinatario_Area.Clave_Area(+) = Sof_Documento.Destinatario_Area_ID  
+		and 	sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+		and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+		and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+		and 	( lower(sof_Documento.asunto) like '%<@TEXTSEARCH@>%' or lower(sof_Documento.resumen) like '%<@TEXTSEARCH@>%')
+		UNION ALL  
+		Select 	Sof_documento.Documento_id, 
+			Sof_Documento.Asunto, 
+			Sof_Documento.Resumen, 
+			Sof_Documento.Usuario_ID, 
+			Sof_Documento.Volante, 
+			Sof_Documento.Tipo_Remitente, 
+			Sof_Documento.Referencia, 
+			Sof_Documento.Fecha_Documento_Fuente, 
+			Sof_Documento.Fecha_Elaboracion, 
+			Sof_Documento.Documento_Bis_Id,  
+			Sof_Remitente_Externo.dependencia remitenteArea,  
+			Sof_Remitente_Externo_Titular.nombre remitenteNombre, 
+			Sof_Documento.Destinatario_Area_ID DestinatarioAreaId, 
+			Sof_Destinatario_Area.Area DestinatarioArea, 
+			Sof_Destinatario_Titular.Nombre DestinatarioNombre, 
+			Sof_Documento.Estatus StatusVolante  
+		From 	Sof_Documento, 
+			Sof_Tipo_Documento, 
+			(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_Destinatario_Area, 
+			Hint_v_Usuarios Sof_Destinatario_Titular, 
+			sof_remitente_externo , 
+			sof_remitente_externo_titular  
+		Where 	Sof_Documento.Usuario_ID in (<@USERSID@>)
+		and 	Sof_Tipo_Documento.Tipo_Documento_ID = Sof_Documento.Tipo_Documento_ID 
+		and 	Sof_Documento.Estatus  like '<@STATUSDOCUMENT@>' 
+		and 	sof_Documento.Tipo_Remitente = 'E' 
+		and 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+		and 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID 
+		and 	Sof_Destinatario_Area.Clave_Area(+) = Sof_Documento.Destinatario_Area_ID  
+		and 	sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+		and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+		and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+		and 	( lower(sof_Documento.asunto) like '%<@TEXTSEARCH@>%' or lower(sof_Documento.resumen) like '%<@TEXTSEARCH@>%')  ) 
+		SD,
+		(select documento_turnar_id, documento_id, destinatario_id,  estatus, instruccion, TurnadoAreaId, TurnadoArea, TurnadoNombre
+		  from 	(
+			SELECT 	ccpara_id documento_turnar_id,               
+			SOF_CCPARA.documento_id documento_id,
+			SOF_CCPARA.destinatario_id destinatario_id,
+			SOF_CCPARA.estatus estatus,            
+			('Para su Conocimiento') instruccion,
+			SOF_CCPARA.destinatario_area_id TurnadoAreaId,
+			SOF_CCPARA_Area.Area TurnadoArea, 
+			SOF_CCPARA_Titular.Nombre TurnadoNombre
+			FROM  	SOF_ccpara, 
+				(Select Distinct Clave_Area, Area From Hint_v_Usuarios Where Area is not null) Sof_ccpara_Area, 
+				Hint_v_Usuarios SOF_ccpara_Titular,
+				sof_documento
+			WHERE 	1=1
+			AND 	sof_documento.usuario_id in (<@USERSID@>) 
+			AND 	sof_ccpara.documento_id = sof_documento.documento_id
+			AND 	sof_ccpara.Eliminado = '0'  
+			<@CCPARASTATUS@>  
+			AND 	Sof_ccpara_Area.Clave_Area(+) = sof_ccpara.Destinatario_Area_ID 
+			AND 	Sof_ccpara_Titular.ID_Usuario(+) = sof_ccpara.Destinatario_ID  
+			AND 	Sof_ccpara.Destinatario_Area_ID like '<@ADDRESSEEID@>'
+		) ) SDT
+	WHERE SD.documento_id = SDT.documento_id
+	order by turnadoAreaId, volante
+
+      ]]>
+    </source>
+   </query>
+
+
+    <query name="qryDocumentsByVolante">
+    <source>
+      <![CDATA[ 
+		Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte
+			From ( 
+					Select SOF_Documento.Documento_ID, SOF_documento.asunto, SOF_documento.resumen, SOF_documento.usuario_id, 
+							SOF_documento.volante, SOF_Documento.Tipo_Remitente, SOF_Documento.Referencia, 
+							SOF_Documento.Fecha_Documento_Fuente, SOF_Documento.Fecha_Elaboracion, SOF_documento.documento_bis_id, 
+							SOF_Remitente_Area.Area RemitenteArea, SOF_Remitente_Titular.Nombre RemitenteNombre, 
+							SOF_documento.destinatario_area_id DestinatarioAreaID,  SOF_destinatario_area.area 	DestinatarioArea, 
+							SOF_destinatario_titular.nombre DestinatarioNombre, SOF_documento.estatus StatusVolante,
+							SOF_DOCTO_TURNA.DESTINATARIO_ID dest_docto,
+							CASE  SOF_DOCTO_TURNA.ESTATUS 
+				    				 WHEN '0' THEN 'Sin/Abrir'
+				     				 WHEN '1' THEN 'Tramite'
+				     				 WHEN '2' THEN 'RETURNADO'
+				     				 WHEN '3' THEN 'CONCLUIDO'
+				      				ELSE  ''
+							END AS ESTADO,
+							(SELECT MAX(SOF_ESTATUS_TURNAR.FECHA_DESDE)
+							FROM SOF_ESTATUS_TURNAR  
+							WHERE sof_docto_turna.DOCUMENTO_TURNAR_ID=SOF_ESTATUS_TURNAR.DOCUMENTO_TURNAR_ID) AS fchStatusTurno
+				 				 
+					From 	Sof_Documento, 
+							(Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, 
+							(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular, 
+							(Select distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area , 
+							Hint_v_Usuarios Sof_Remitente_Titular,
+							Sof_documento_turnar sof_docto_turna
+    
+					Where   1=1
+					AND		Sof_documento.DESTINATARIO_AREA_ID in (<@ADDRESSEEID@>)
+					AND 	Sof_documento.Estatus LIKE '<@STATUS@>'
+					AND 	Sof_documento.Tipo_Documento_Id LIKE <@DOCUMENTTYPE@>
+					AND 	Sof_documento.Tipo_Remitente = 'I'  
+					AND 	sof_remitente_area.clave_area(+) = sof_documento.Remitente_Area_ID  
+					AND 	sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_ID 
+					AND 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID 
+					AND 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+					AND 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>') 
+					AND 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')
+					UNION ALL  
+					Select Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, 
+							sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, 
+							Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, 
+							sof_documento.documento_bis_id, Sof_Remitente_Externo.Dependencia RemitenteArea, 
+							Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, sof_documento.destinatario_area_id destinatarioAreaId, 
+							sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, 
+							sof_documento.estatus StatusVolante,
+							SOF_DOCTO_TURNA.DESTINATARIO_ID dest_docto,
+							CASE  SOF_DOCTO_TURNA.ESTATUS 
+				    				 WHEN '0' THEN 'Sin/Abrir'
+				     				 WHEN '1' THEN 'Tramite'
+				     				 WHEN '2' THEN 'RETURNADO'
+				     				 WHEN '3' THEN 'CONCLUIDO'
+				      				ELSE  ''
+							END AS ESTADO,
+							(SELECT MAX(SOF_ESTATUS_TURNAR.FECHA_DESDE)
+							FROM SOF_ESTATUS_TURNAR  
+							WHERE sof_docto_turna.DOCUMENTO_TURNAR_ID=SOF_ESTATUS_TURNAR.DOCUMENTO_TURNAR_ID) AS fchStatusTurno 
+					From 	Sof_Documento, 
+							(Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, 
+							(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular,  
+							Sof_Remitente_Externo ,  
+							Sof_Remitente_Externo_titular,
+							Sof_documento_turnar sof_docto_turna   
+					Where 	1=1
+					And		Sof_documento.DESTINATARIO_AREA_ID in (<@ADDRESSEEID@>) 
+					And 	Sof_documento.Estatus LIKE '<@STATUS@>'
+					And 	Sof_documento.Tipo_Documento_Id LIKE <@DOCUMENTTYPE@>
+					And 	Sof_documento.Tipo_Remitente = 'E' 
+					And 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+					And 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID 
+					And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID 
+					And 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+					and 	trunc(sof_documento.fecha_elaboracion) >= to_date('<@FROMDATE@>')
+					and 	trunc(fecha_elaboracion) <= to_date('<@TODATE@>')  ) SD, sof_documento_relacionado
+		WHERE sof_documento_relacionado.documento_id = sd.documento_id(+)
+		and   sof_documento_relacionado.estatus = sd.statusvolante
+		order by sd.volante
+      ]]>
+    </source>
+  </query>
+
+</queries>

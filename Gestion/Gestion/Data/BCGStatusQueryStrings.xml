@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Sistema: Control de Gestion Documental 			Documento: Database Query Strings    -->
+<!-- Fecha  : 03/Febrero/2006      				Autor    : Arturo Sosa García        -->
+<queries>
+  <query name="qryStatusByDocument">
+    <source>
+      <![CDATA[ 
+			select documento_id, sum(Pendiente) Pendiente, max(fromDatePen) fromDatePen, sum(Tramite) Tramite, max(fromDateTra) fromDateTra, 
+					sum(Concluido) Concluido, max(fromDateCon) fromDateCon,	sum(Total) total
+				from (	
+						select 	sof_documento_turnar.documento_id, Count(*) Pendiente,  max(sof_estatus_turnar.fecha_desde) fromDatePen, 
+								(0) tramite, to_date('') fromDateTra, (0) concluido,   to_date('') fromDateCon, (0) Total
+						from	sof_documento, sof_documento_turnar, sof_estatus_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.eliminado = 0
+						and 	sof_estatus_turnar.estatus = 0
+						and 	sof_estatus_turnar.documento_turnar_id = sof_documento_turnar.documento_turnar_id
+						group by sof_documento_turnar.documento_id
+						UNION ALL
+						select 	sof_documento_turnar.documento_id, (0) Pendiente, to_date('') fromDatePen, Count(*) tramite, 
+								max(sof_estatus_turnar.fecha_desde) fromDateTra, (0) concluido,  to_date('') fromDateCon, (0) Total
+						from  	sof_documento, sof_documento_turnar, sof_estatus_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.eliminado = 0
+						and 	sof_estatus_turnar.estatus = 1
+						and 	sof_estatus_turnar.documento_turnar_id = sof_documento_turnar.documento_turnar_id
+						group by sof_documento_turnar.documento_id
+						UNION ALL
+						select 	sof_documento_turnar.documento_id, (0) Pendiente, to_date('') fromDatePen, (0) tramite, to_date('') fromDateTra,
+								Count(*) concluido,  max(sof_estatus_turnar.fecha_hasta)  fromDateCon, (0) Total
+						from	sof_documento, sof_documento_turnar, sof_estatus_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.eliminado = 0
+						and 	sof_estatus_turnar.estatus = 3
+						and 	sof_estatus_turnar.documento_turnar_id = sof_documento_turnar.documento_turnar_id
+						group by sof_documento_turnar.documento_id
+						UNION ALL
+						select 	sof_documento_turnar.documento_id, (0) Pendiente,  to_date('') fromDatePen, (0) tramite, to_date('') fromDateTra, 
+								(0) concluido, to_date('') fromDateCon, count(*) Total
+						from  	sof_documento, sof_documento_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.eliminado = 0
+						group by sof_documento_turnar.documento_id
+				)
+			group by documento_id
+      ]]>
+    </source>
+  </query>
+  <query name="qryStatusByAddressee">
+    <source>
+      <![CDATA[ 
+			select documento_id, documento_turnar_id, sum(Pendiente) Pendiente, max(fromDatePen) fromDatePen, sum(Tramite) Tramite, 
+						max(fromDateTra) fromDateTra, sum(Concluido) Concluido, max(fromDateCon) fromDateCon, sum(Total) total
+				from (	
+						select 	sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id,
+								Count(*) Pendiente,  max(sof_estatus_turnar.fecha_desde) fromDatePen, (0) tramite, to_date('') fromDateTra, 
+								(0) concluido, to_date('') fromDateCon, (0) Total
+						from  	sof_documento, sof_documento_turnar, sof_estatus_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.documento_turnar_id = <@DOCUMENTTURNID@>
+						and     sof_documento_turnar.eliminado = 0
+						and 	sof_estatus_turnar.estatus = 0
+						and 	sof_estatus_turnar.documento_turnar_id = sof_documento_turnar.documento_turnar_id
+						group by sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id
+						UNION ALL
+						select 	sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id, (0) Pendiente,  
+								to_date('') fromDatePen, Count(*) tramite, max(sof_estatus_turnar.fecha_desde) fromDateTra, (0) concluido,  
+								to_date('') fromDateCon, (0) Total
+						from  	sof_documento, sof_documento_turnar, sof_estatus_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.documento_turnar_id = <@DOCUMENTTURNID@>
+						and     sof_documento_turnar.eliminado = 0
+						and 	sof_estatus_turnar.estatus = 1
+						and 	sof_estatus_turnar.documento_turnar_id = sof_documento_turnar.documento_turnar_id
+						group by sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id
+						UNION ALL
+						select 	sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id,(0) Pendiente,  to_date('') fromDatePen, 
+								(0) tramite, to_date('') fromDateTra, Count(*) concluido,  max(sof_estatus_turnar.fecha_hasta) fromDateCon,
+								(0) Total
+						from  	sof_documento, sof_documento_turnar, sof_estatus_turnar
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.documento_turnar_id = <@DOCUMENTTURNID@>
+						and     sof_documento_turnar.eliminado = 0
+						and 	sof_estatus_turnar.estatus = 3
+						and 	sof_estatus_turnar.documento_turnar_id = sof_documento_turnar.documento_turnar_id
+						group by sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id
+						UNION ALL
+						select 	sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id, (0) Pendiente, to_date('') fromDatePen, 
+								(0) tramite, to_date('') fromDateTra, (0) concluido, to_date('') fromDateCon, Count(*) Total
+						from  	sof_documento, sof_documento_turnar	
+						Where 	1=1
+						and 	sof_documento.documento_id = <@DOCUMENTID@>
+						and     sof_documento_turnar.documento_id = sof_documento.documento_id
+						and     sof_documento_turnar.eliminado = 0
+						group by sof_documento_turnar.documento_id, sof_documento_turnar.documento_turnar_id
+				)
+			group by documento_id, documento_turnar_id
+      ]]>
+    </source>
+  </query>  
+  <query name="qryStatusByDocumentAddressee">
+    <source>
+      <![CDATA[ 
+    	SELECT <@GRAL_LEDGERS_CONS@>id_moneda, id_cuenta, id_sector<@GET_SUBS_ACCTS@>, 
+             (0) saldo_inicial, (SUM(DECODE(tipo_movimiento, 'D', monto , 0))) cargos,
+             (SUM(DECODE(tipo_movimiento, 'H', monto, 0))) abonos,
+             MAX(fecha_afectacion) fecha_ultimo_movimiento
+    	FROM COF_Transaccion, COF_Movimiento
+      WHERE (<@GRAL_LEDGERS_FILTER@>) AND (fecha_afectacion <= '<@FROM_DATE@>') AND
+            (COF_Transaccion.id_transaccion = COF_Movimiento.id_transaccion)
+      GROUP BY <@GRAL_LEDGERS_CONS@>id_moneda, id_cuenta, id_sector<@GET_SUBS_ACCTS@>
+      ]]>
+    </source>
+  </query>
+</queries>

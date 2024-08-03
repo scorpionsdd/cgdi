@@ -1,0 +1,912 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5C81E7C6-026F-46D7-9559-CDB5B04BCC95}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gestion</RootNamespace>
+    <AssemblyName>Gestion</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <Use64BitIISExpress>true</Use64BitIISExpress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BCCXMLDOMParser, Version=1.0.6410.19425, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\BCCXMLDOMParser.dll</HintPath>
+    </Reference>
+    <Reference Include="Log.Layer.Business">
+      <HintPath>..\..\..\..\..\..\..\TFS\Log\03-Business\Log.Layer.Business\bin\Debug\Log.Layer.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="Log.Layer.Model">
+      <HintPath>..\..\..\..\..\..\..\TFS\Log\03-Business\Log.Layer.Business\bin\Debug\Log.Layer.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\PIA\Office14\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.19.18.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.OracleClient">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="TypedRegistry, Version=1.0.0.3, Culture=neutral, PublicKeyToken=d7dc4571284f76c3">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\TypedRegistry.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="gestion\404.htm" />
+    <Content Include="gestion\correspondencia\error404.aspx" />
+    <Content Include="gestion\Data\BCGQueryFiles.xml" />
+    <Content Include="gestion\images\errorLupa.jpg" />
+    <Content Include="gestion\images\loading.gif" />
+    <Content Include="gestion\jquery.min.js" />
+    <Content Include="gestion\seguridad\bitacora.aspx" />
+    <Content Include="gestion\seguridad\metadata.aspx" />
+    <Content Include="gestion\user_files\css\style404.css" />
+    <Content Include="gestion\user_files\error404.aspx" />
+    <Content Include="gestion\Data\BCGQueryDocuments.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gestion\Data\BCGQueryDocumentsByVolante.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gestion\Data\BCGStatusQueryStrings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gestion\Data\Documento.1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gestion\Data\script.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gestion\Data\sqldetiempo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gestion\css\worksheet.css" />
+    <Content Include="gestion\help_learning\help.doc" />
+    <Content Include="gestion\help_learning\help.pdf" />
+    <Content Include="gestion\images\abc_r1_c1.gif" />
+    <Content Include="gestion\images\abc_r4_c4.gif" />
+    <Content Include="gestion\images\aguila.gif" />
+    <Content Include="gestion\images\ASP.NET-Logo-small.gif" />
+    <Content Include="gestion\images\ASP.NET-Time-Tracker.gif" />
+    <Content Include="gestion\images\attach.gif" />
+    <Content Include="gestion\images\banobras.gif" />
+    <Content Include="gestion\images\BanobrasExcel.png" />
+    <Content Include="gestion\images\bullet.gif" />
+    <Content Include="gestion\images\ButtonOdontology.gif" />
+    <Content Include="gestion\images\calendar.gif" />
+    <Content Include="gestion\images\calendar1.gif" />
+    <Content Include="gestion\images\close_red.gif" />
+    <Content Include="gestion\images\close_red.ico" />
+    <Content Include="gestion\images\close_white.gif" />
+    <Content Include="gestion\images\collage.jpg" />
+    <Content Include="gestion\images\collapsed.gif" />
+    <Content Include="gestion\images\correspondencia.jpg" />
+    <Content Include="gestion\images\detail.gif" />
+    <Content Include="gestion\images\download.gif" />
+    <Content Include="gestion\images\down_menu_red.gif" />
+    <Content Include="gestion\images\ebookonline.gif" />
+    <Content Include="gestion\images\exclamation.gif" />
+    <Content Include="gestion\images\expanded.gif" />
+    <Content Include="gestion\images\flecha.gif" />
+    <Content Include="gestion\images\fondo.gif" />
+    <Content Include="gestion\images\globally-visible.gif" />
+    <Content Include="gestion\images\help.bmp" />
+    <Content Include="gestion\images\help_blue.gif" />
+    <Content Include="gestion\images\help_red.gif" />
+    <Content Include="gestion\images\help_white.gif" />
+    <Content Include="gestion\images\highlighter.gif" />
+    <Content Include="gestion\images\hscp.gif" />
+    <Content Include="gestion\images\icon-delete.gif" />
+    <Content Include="gestion\images\icon-floppy.gif" />
+    <Content Include="gestion\images\icon-pencil-x.gif" />
+    <Content Include="gestion\images\icon-pencil.gif" />
+    <Content Include="gestion\images\invisible.gif" />
+    <Content Include="gestion\images\invisible4.gif" />
+    <Content Include="gestion\images\invisible8.gif" />
+    <Content Include="gestion\images\ir.gif" />
+    <Content Include="gestion\images\leaf.gif" />
+    <Content Include="gestion\images\left_arrow.gif" />
+    <Content Include="gestion\images\listview.gif" />
+    <Content Include="gestion\images\logo.gif" />
+    <Content Include="gestion\images\Logo.jpg" />
+    <Content Include="gestion\images\LogoAnt.jpg" />
+    <Content Include="gestion\images\mexico.gif" />
+    <Content Include="gestion\images\minus.gif" />
+    <Content Include="gestion\images\ontica.jpg" />
+    <Content Include="gestion\images\order_asc_red.gif" />
+    <Content Include="gestion\images\order_desc_red.gif" />
+    <Content Include="gestion\images\panandzoom.gif" />
+    <Content Include="gestion\images\participants.gif" />
+    <Content Include="gestion\images\patron_top.gif" />
+    <Content Include="gestion\images\Plantilla.gif" />
+    <Content Include="gestion\images\pleca.gif" />
+    <Content Include="gestion\images\pleca_dot.gif" />
+    <Content Include="gestion\images\plus.gif" />
+    <Content Include="gestion\images\refresh_red.gif" />
+    <Content Include="gestion\images\refresh_white.gif" />
+    <Content Include="gestion\images\retiro2.gif" />
+    <Content Include="gestion\images\right_arrow.gif" />
+    <Content Include="gestion\images\save.gif" />
+    <Content Include="gestion\images\section_division_bar.jpg" />
+    <Content Include="gestion\images\separator.gif" />
+    <Content Include="gestion\images\separator.jpg" />
+    <Content Include="gestion\images\spacer.gif" />
+    <Content Include="gestion\images\statistics.jpg" />
+    <Content Include="gestion\images\tack_down_white.gif" />
+    <Content Include="gestion\images\tack_white.gif" />
+    <Content Include="gestion\images\task_red.gif" />
+    <Content Include="gestion\images\task_white.gif" />
+    <Content Include="gestion\images\top_nav.jpg" />
+    <Content Include="gestion\images\transp.gif" />
+    <Content Include="gestion\images\underlinetxt.gif" />
+    <Content Include="gestion\images\vacio.gif" />
+    <Content Include="gestion\images\view.jpg" />
+    <Content Include="gestion\images\wwwbanobras.gif" />
+    <Content Include="gestion\portal\headerexpanded.aspx" />
+    <Content Include="gestion\portal\images\aguila.gif" />
+    <Content Include="gestion\portal\images\banobras.gif" />
+    <Content Include="gestion\portal\images\correspondencia.jpg" />
+    <Content Include="gestion\portal\images\ebookonline.gif" />
+    <Content Include="gestion\portal\images\globally-visible.gif" />
+    <Content Include="gestion\portal\images\help.bmp" />
+    <Content Include="gestion\portal\images\highlighter.gif" />
+    <Content Include="gestion\portal\images\hscp.gif" />
+    <Content Include="gestion\portal\images\ir.gif" />
+    <Content Include="gestion\portal\images\listview.gif" />
+    <Content Include="gestion\portal\images\mexico.gif" />
+    <Content Include="gestion\portal\images\panandzoom.gif" />
+    <Content Include="gestion\portal\images\participants.gif" />
+    <Content Include="gestion\portal\images\Plantilla.gif" />
+    <Content Include="gestion\portal\images\statistics.jpg" />
+    <Content Include="gestion\portal\images\transp.gif" />
+    <Content Include="gestion\portal\images\underlinetxt.gif" />
+    <Content Include="gestion\portal\images\wwwbanobras.gif" />
+    <Content Include="gestion\resources\applications.css" />
+    <Content Include="gestion\resources\BanStyles.css" />
+    <Content Include="gestion\resources\file_uploader.css" />
+    <Content Include="gestion\resources\header.css" />
+    <Content Include="gestion\resources\logon.css" />
+    <Content Include="gestion\resources\main_page.css" />
+    <Content Include="gestion\resources\report_manager.css" />
+    <Content Include="gestion\resources\report_manager2.css" />
+    <Content Include="gestion\resources\styles.css" />
+    <Content Include="gestion\resources\voucher.css" />
+    <Content Include="gestion\resources\workflow.css" />
+    <Content Include="gestion\user_files\104930\arrowAbajo.png" />
+    <Content Include="gestion\user_files\104930\xxx.reg" />
+    <Content Include="gestion\user_files\106313\topTabR.gif" />
+    <Content Include="gestion\user_files\106402\script.txt" />
+    <Content Include="gestion\user_files\ReportDesigner\templates\BandejaDeEntrada.xlt" />
+    <Content Include="gestion\user_files\ReportDesigner\templates\BandejaDeSalida.XLT" />
+    <Content Include="gestion\user_files\ReportDesigner\templates\BandejaDeSalida1.xlt" />
+    <Content Include="gestion\user_files\ReportDesigner\templates\Datos.xls" />
+    <Content Include="packages.config" />
+    <Content Include="gestion\portal\header.aspx" />
+    <Content Include="gestion\portal\index.aspx" />
+    <Content Include="gestion\portal\main.aspx" />
+    <Content Include="gestion\sources\ExportaExcel.ashx" />
+    <Content Include="gestion\images\sqlnet.log" />
+    <Content Include="gestion\images\Thumbs.db" />
+    <None Include="gestion\WinRegistry\Gestion.reg" />
+    <None Include="Properties\PublishProfiles\CGD Publish.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Scripts\jquery-3.6.3.intellisense.js" />
+    <Content Include="Scripts\jquery-3.6.3.js" />
+    <Content Include="Scripts\jquery-3.6.3.min.js" />
+    <Content Include="Scripts\jquery-3.6.3.slim.js" />
+    <Content Include="Scripts\jquery-3.6.3.slim.min.js" />
+    <Content Include="Scripts\jquery-3.6.3.slim.min.map" />
+    <Content Include="Scripts\jquery-3.6.3.min.map" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="gestion\admin.aspx" />
+    <Content Include="gestion\Banner.ascx" />
+    <Content Include="gestion\cal.css" />
+    <Content Include="gestion\correspondencia\alternate_reply.aspx" />
+    <Content Include="gestion\correspondencia\ccpara_mail.aspx" />
+    <Content Include="gestion\correspondencia\ccpara_reply.aspx" />
+    <Content Include="gestion\correspondencia\change_status_ccpara.aspx" />
+    <Content Include="gestion\correspondencia\change_status_receive.aspx" />
+    <Content Include="gestion\correspondencia\CreateMail.aspx" />
+    <Content Include="gestion\correspondencia\create_report.aspx" />
+    <Content Include="gestion\correspondencia\create_turnar.aspx" />
+    <Content Include="gestion\correspondencia\css\file_uploader.css" />
+    <Content Include="gestion\correspondencia\document_display.aspx" />
+    <Content Include="gestion\correspondencia\edit_areas.aspx" />
+    <Content Include="gestion\correspondencia\edit_attach_reply.aspx" />
+    <Content Include="gestion\correspondencia\edit_empleados.aspx" />
+    <Content Include="gestion\correspondencia\edit_mail_addressee.aspx" />
+    <Content Include="gestion\correspondencia\edit_mail_attach.aspx" />
+    <Content Include="gestion\correspondencia\edit_mail_receive.aspx" />
+    <Content Include="gestion\correspondencia\edit_mail_withcopyby.aspx" />
+    <Content Include="gestion\correspondencia\edit_mapeo_enviados.aspx" />
+    <Content Include="gestion\correspondencia\edit_mapeo_recibidos.aspx" />
+    <Content Include="gestion\correspondencia\edit_puestos.aspx" />
+    <Content Include="gestion\correspondencia\edit_regla.aspx" />
+    <Content Include="gestion\correspondencia\edit_remitente_externo.aspx" />
+    <Content Include="gestion\correspondencia\edit_remitente_externo_titular.aspx" />
+    <Content Include="gestion\correspondencia\edit_roles.aspx" />
+    <Content Include="gestion\correspondencia\edit_status_mail.aspx" />
+    <Content Include="gestion\correspondencia\edit_tipo_documento.aspx" />
+    <Content Include="gestion\correspondencia\error.aspx" />
+    <Content Include="gestion\correspondencia\Explorer_External.aspx" />
+    <Content Include="gestion\correspondencia\mail_alternate.aspx" />
+    <Content Include="gestion\correspondencia\mail_attach_view.aspx" />
+    <Content Include="gestion\correspondencia\mail_editor.aspx" />
+    <Content Include="gestion\correspondencia\mail_explorer.aspx" />
+    <Content Include="gestion\correspondencia\mail_header_editor.aspx" />
+    <Content Include="gestion\correspondencia\parse_alternate.aspx" />
+    <Content Include="gestion\correspondencia\print_alternate.aspx" />
+    <Content Include="gestion\correspondencia\receive_mail.aspx" />
+    <Content Include="gestion\correspondencia\Results.aspx" />
+    <Content Include="gestion\correspondencia\statistics.aspx" />
+    <Content Include="gestion\correspondencia\view_areas.aspx" />
+    <Content Include="gestion\correspondencia\view_empleados.aspx" />
+    <Content Include="gestion\correspondencia\view_mapeo_enviados.aspx" />
+    <Content Include="gestion\correspondencia\view_mapeo_recibidos.aspx" />
+    <Content Include="gestion\correspondencia\view_puestos.aspx" />
+    <Content Include="gestion\correspondencia\view_regla.aspx" />
+    <Content Include="gestion\correspondencia\view_roles.aspx" />
+    <Content Include="gestion\correspondencia\view_tipo_atencion.aspx" />
+    <Content Include="gestion\correspondencia\view_tipo_solicitud.aspx" />
+    <Content Include="gestion\correspondencia\volante_create.aspx" />
+    <Content Include="gestion\default.aspx" />
+    <Content Include="gestion\detailhd.htm" />
+    <Content Include="gestion\dg10.aspx" />
+    <Content Include="gestion\dg10_details.aspx" />
+    <Content Include="gestion\ExpandColumns.aspx" />
+    <Content Include="gestion\ExpandColumns_Opt.aspx" />
+    <Content Include="gestion\footer.htm" />
+    <Content Include="gestion\frmDataSet.aspx" />
+    <Content Include="gestion\frmRefCursor.aspx" />
+    <Content Include="gestion\GAP.GIF" />
+    <Content Include="gestion\general.js" />
+    <Content Include="Global.asax" />
+    <Content Include="gestion\images\central\working.gif" />
+    <Content Include="gestion\images\financial_accounting\voucher_logo.gif" />
+    <Content Include="gestion\images\financial_accounting\voucher_logo.jpg" />
+    <Content Include="gestion\images\icons_sm\document_sm.gif" />
+    <Content Include="gestion\images\icons_sm\printer.gif" />
+    <Content Include="gestion\images\icons_sm\printer.jpg" />
+    <Content Include="gestion\images\portal\grafica.gif" />
+    <Content Include="gestion\images\portal\lead_story_sm.gif" />
+    <Content Include="gestion\images\portal\sp_logo_sm.gif" />
+    <Content Include="gestion\images\workflow\alert_icon.gif" />
+    <Content Include="gestion\images\workflow\clip.gif" />
+    <Content Include="gestion\images\workflow\clip_barra.gif" />
+    <Content Include="gestion\images\workflow\clip_header.gif" />
+    <Content Include="gestion\images\workflow\clip_icon.gif" />
+    <Content Include="gestion\images\workflow\deleted.gif" />
+    <Content Include="gestion\images\workflow\high_priority.gif" />
+    <Content Include="gestion\images\workflow\inbox.gif" />
+    <Content Include="gestion\images\workflow\item_alert.gif" />
+    <Content Include="gestion\images\workflow\item_email.gif" />
+    <Content Include="gestion\images\workflow\item_task.gif" />
+    <Content Include="gestion\images\workflow\item_type_header.gif" />
+    <Content Include="gestion\images\workflow\logout.gif" />
+    <Content Include="gestion\images\workflow\mail_icon.gif" />
+    <Content Include="gestion\images\workflow\manny.gif" />
+    <Content Include="gestion\images\workflow\new_mail.gif" />
+    <Content Include="gestion\images\workflow\new_task.gif" />
+    <Content Include="gestion\images\workflow\normal_priority.gif" />
+    <Content Include="gestion\images\workflow\organizations.gif" />
+    <Content Include="gestion\images\workflow\outbox.gif" />
+    <Content Include="gestion\images\workflow\participants.gif" />
+    <Content Include="gestion\images\workflow\pixel.gif" />
+    <Content Include="gestion\images\workflow\priority.gif" />
+    <Content Include="gestion\images\workflow\priority_barra.gif" />
+    <Content Include="gestion\images\workflow\priority_header.gif" />
+    <Content Include="gestion\images\workflow\priority_high.gif" />
+    <Content Include="gestion\images\workflow\sended.gif" />
+    <Content Include="gestion\images\workflow\systems.gif" />
+    <Content Include="gestion\images\workflow\tasks.gif" />
+    <Content Include="gestion\images\workflow\task_icon.gif" />
+    <Content Include="gestion\images\workflow\users.gif" />
+    <Content Include="gestion\images\workflow\workgroups.gif" />
+    <Content Include="gestion\monthhd.htm" />
+    <Content Include="gestion\script.js" />
+    <Content Include="gestion\ScriptDocumentReceipt.sql" />
+    <Content Include="gestion\Search.aspx" />
+    <Content Include="gestion\SignIn.ascx" />
+    <Content Include="gestion\styles.css" />
+    <Content Include="gestion\t.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="gestion\workflow\engine\run_task_app.aspx" />
+    <Content Include="gestion\xxx.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gestion\admin.aspx.cs">
+      <DependentUpon>admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\CleanString.cs" />
+    <Compile Include="gestion\correspondencia\alternate_reply.aspx.cs">
+      <DependentUpon>alternate_reply.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\ccpara_mail.aspx.cs">
+      <DependentUpon>ccpara_mail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\ccpara_reply.aspx.cs">
+      <DependentUpon>ccpara_reply.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\change_status_ccpara.aspx.cs">
+      <DependentUpon>change_status_ccpara.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\change_status_receive.aspx.cs">
+      <DependentUpon>change_status_receive.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\CreateMail.aspx.cs">
+      <DependentUpon>CreateMail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\create_report.aspx.cs">
+      <DependentUpon>create_report.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\create_turnar.aspx.cs">
+      <DependentUpon>create_turnar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\document_display.aspx.cs">
+      <DependentUpon>document_display.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_areas.aspx.cs">
+      <DependentUpon>edit_areas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_attach_reply.aspx.cs">
+      <DependentUpon>edit_attach_reply.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_empleados.aspx.cs">
+      <DependentUpon>edit_empleados.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_mail_addressee.aspx.cs">
+      <DependentUpon>edit_mail_addressee.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_mail_attach.aspx.cs">
+      <DependentUpon>edit_mail_attach.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_mail_receive.aspx.cs">
+      <DependentUpon>edit_mail_receive.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_mail_withcopyby.aspx.cs">
+      <DependentUpon>edit_mail_withcopyby.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_mapeo_enviados.aspx.cs">
+      <DependentUpon>edit_mapeo_enviados.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_mapeo_recibidos.aspx.cs">
+      <DependentUpon>edit_mapeo_recibidos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_puestos.aspx.cs">
+      <DependentUpon>edit_puestos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_regla.aspx.cs">
+      <DependentUpon>edit_regla.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_remitente_externo.aspx.cs">
+      <DependentUpon>edit_remitente_externo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_remitente_externo_titular.aspx.cs">
+      <DependentUpon>edit_remitente_externo_titular.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_roles.aspx.cs">
+      <DependentUpon>edit_roles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_status_mail.aspx.cs">
+      <DependentUpon>edit_status_mail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\edit_tipo_documento.aspx.cs">
+      <DependentUpon>edit_tipo_documento.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\Explorer_External.aspx.cs">
+      <DependentUpon>Explorer_External.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\mail_alternate.aspx.cs">
+      <DependentUpon>mail_alternate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\mail_attach_view.aspx.cs">
+      <DependentUpon>mail_attach_view.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\mail_editor.aspx.cs">
+      <DependentUpon>mail_editor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\mail_explorer.aspx.cs">
+      <DependentUpon>mail_explorer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\mail_header_editor.aspx.cs">
+      <DependentUpon>mail_header_editor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\parse_alternate.aspx.cs">
+      <DependentUpon>parse_alternate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\print_alternate.aspx.cs">
+      <DependentUpon>print_alternate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\receive_mail.aspx.cs">
+      <DependentUpon>receive_mail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\Results.aspx.cs">
+      <DependentUpon>Results.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\statistics.aspx.cs">
+      <DependentUpon>statistics.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_areas.aspx.cs">
+      <DependentUpon>view_areas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_empleados.aspx.cs">
+      <DependentUpon>view_empleados.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_mapeo_enviados.aspx.cs">
+      <DependentUpon>view_mapeo_enviados.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_mapeo_recibidos.aspx.cs">
+      <DependentUpon>view_mapeo_recibidos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_puestos.aspx.cs">
+      <DependentUpon>view_puestos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_regla.aspx.cs">
+      <DependentUpon>view_regla.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_roles.aspx.cs">
+      <DependentUpon>view_roles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_tipo_atencion.aspx.cs">
+      <DependentUpon>view_tipo_atencion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\view_tipo_solicitud.aspx.cs">
+      <DependentUpon>view_tipo_solicitud.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\correspondencia\volante_create.aspx.cs">
+      <DependentUpon>volante_create.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\DataGridTool.cs" />
+    <Compile Include="gestion\default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="gestion\frmDataSet.aspx.cs">
+      <DependentUpon>frmDataSet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\frmRefCursor.aspx.cs">
+      <DependentUpon>frmRefCursor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\portal\headerexpanded.aspx.cs">
+      <DependentUpon>headerexpanded.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\seguridad\bitacora.aspx.cs">
+      <DependentUpon>bitacora.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\seguridad\bitacora.aspx.designer.cs">
+      <DependentUpon>bitacora.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="gestion\seguridad\metadata.aspx.cs">
+      <DependentUpon>metadata.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\seguridad\metadata.aspx.designer.cs">
+      <DependentUpon>metadata.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="gestion\sources\Seguridad.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="gestion\portal\header.aspx.cs">
+      <DependentUpon>header.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\portal\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\portal\main.aspx.cs">
+      <DependentUpon>main.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="gestion\Search.aspx.cs">
+      <DependentUpon>Search.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\sources\Adressee.cs" />
+    <Compile Include="gestion\sources\AppSettingsReader.cs" />
+    <Compile Include="gestion\sources\Areas.cs" />
+    <Compile Include="gestion\sources\Attached.cs" />
+    <Compile Include="gestion\sources\DataReader_Table.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gestion\sources\Destinatario.cs" />
+    <Compile Include="gestion\sources\Documents.cs" />
+    <Compile Include="gestion\sources\Document_Alternate.cs" />
+    <Compile Include="gestion\sources\document_type.cs" />
+    <Compile Include="gestion\sources\ExcelConvert.cs" />
+    <Compile Include="gestion\sources\ExportaExcel.ashx.cs">
+      <DependentUpon>ExportaExcel.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="gestion\sources\ExternalSender.cs" />
+    <Compile Include="gestion\sources\ExternalSenderTitular.cs" />
+    <Compile Include="gestion\sources\firma_usuario.cs" />
+    <Compile Include="gestion\sources\MapeoRecibidos.cs" />
+    <Compile Include="gestion\sources\MapeoRegla.cs" />
+    <Compile Include="gestion\sources\OracleHelper.cs" />
+    <Compile Include="gestion\sources\participants.cs" />
+    <Compile Include="gestion\sources\Puestos.cs" />
+    <Compile Include="gestion\sources\RegistryRead.cs" />
+    <Compile Include="gestion\sources\Regla.cs" />
+    <Compile Include="gestion\sources\remitente_externo.cs" />
+    <Compile Include="gestion\sources\Roles.cs" />
+    <Compile Include="gestion\sources\SQLHelper.cs" />
+    <Compile Include="gestion\sources\TipoAtencion.cs" />
+    <Compile Include="gestion\sources\TipoSolicitud.cs" />
+    <Compile Include="gestion\sources\TipoTramite.cs" />
+    <Compile Include="gestion\sources\Users.cs" />
+    <Compile Include="gestion\sources\WebPrinting.cs" />
+    <Compile Include="gestion\sources\WithCopyFor.cs" />
+    <Compile Include="gestion\t.aspx.cs">
+      <DependentUpon>t.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gestion\workflow\engine\run_task_app.aspx.cs">
+      <DependentUpon>run_task_app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="gestion\images\general\" />
+    <Folder Include="gestion\scripts\" />
+    <Folder Include="gestion\workflow\boxes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="gestion\Data\AuthenticationServices.resx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="gestion\correspondencia\alternate_reply.aspx.resx">
+      <DependentUpon>alternate_reply.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\ccpara_mail.aspx.resx">
+      <DependentUpon>ccpara_mail.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\ccpara_reply.aspx.resx">
+      <DependentUpon>ccpara_reply.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\change_status_ccpara.aspx.resx">
+      <DependentUpon>change_status_ccpara.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\change_status_receive.aspx.resx">
+      <DependentUpon>change_status_receive.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\CreateMail.aspx.resx">
+      <DependentUpon>CreateMail.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\create_report.aspx.resx">
+      <DependentUpon>create_report.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\create_turnar.aspx.resx">
+      <DependentUpon>create_turnar.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\document_display.aspx.resx">
+      <DependentUpon>document_display.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_areas.aspx.resx">
+      <DependentUpon>edit_areas.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_attach_reply.aspx.resx">
+      <DependentUpon>edit_attach_reply.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_empleados.aspx.resx">
+      <DependentUpon>edit_empleados.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_firma.aspx.resx" />
+    <EmbeddedResource Include="gestion\correspondencia\edit_mail_addressee.aspx.resx">
+      <DependentUpon>edit_mail_addressee.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_mail_attach.aspx.resx">
+      <DependentUpon>edit_mail_attach.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_mail_receive.aspx.resx">
+      <DependentUpon>edit_mail_receive.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_mail_withcopyby.aspx.resx">
+      <DependentUpon>edit_mail_withcopyby.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_mapeo_enviados.aspx.resx">
+      <DependentUpon>edit_mapeo_enviados.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_mapeo_recibidos.aspx.resx">
+      <DependentUpon>edit_mapeo_recibidos.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_puestos.aspx.resx">
+      <DependentUpon>edit_puestos.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_regla.aspx.resx">
+      <DependentUpon>edit_regla.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_remitente_externo.aspx.resx">
+      <DependentUpon>edit_remitente_externo.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_remitente_externo_titular.aspx.resx">
+      <DependentUpon>edit_remitente_externo_titular.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_roles.aspx.resx">
+      <DependentUpon>edit_roles.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_status_mail.aspx.resx">
+      <DependentUpon>edit_status_mail.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\edit_tipo_documento.aspx.resx">
+      <DependentUpon>edit_tipo_documento.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\Explorer_External.aspx.resx">
+      <DependentUpon>Explorer_External.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\mail_alternate.aspx.resx">
+      <DependentUpon>mail_alternate.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\mail_attach_view.aspx.resx">
+      <DependentUpon>mail_attach_view.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\mail_editor.aspx.resx">
+      <DependentUpon>mail_editor.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\mail_explorer.aspx.resx">
+      <DependentUpon>mail_explorer.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\mail_header_editor.aspx.resx">
+      <DependentUpon>mail_header_editor.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\parse_alternate.aspx.resx">
+      <DependentUpon>parse_alternate.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\print_alternate.aspx.resx">
+      <DependentUpon>print_alternate.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\receive_mail.aspx.resx">
+      <DependentUpon>receive_mail.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\Results.aspx.resx">
+      <DependentUpon>Results.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\statistics.aspx.resx">
+      <DependentUpon>statistics.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\take_turns_mail.aspx.resx" />
+    <EmbeddedResource Include="gestion\correspondencia\view_areas.aspx.resx">
+      <DependentUpon>view_areas.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_empleados.aspx.resx">
+      <DependentUpon>view_empleados.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_mapeo_enviados.aspx.resx">
+      <DependentUpon>view_mapeo_enviados.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_mapeo_recibidos.aspx.resx">
+      <DependentUpon>view_mapeo_recibidos.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_puestos.aspx.resx">
+      <DependentUpon>view_puestos.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_regla.aspx.resx">
+      <DependentUpon>view_regla.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_roles.aspx.resx">
+      <DependentUpon>view_roles.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_tipo_atencion.aspx.resx">
+      <DependentUpon>view_tipo_atencion.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\view_tipo_solicitud.aspx.resx">
+      <DependentUpon>view_tipo_solicitud.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\correspondencia\volante_create.aspx.resx">
+      <DependentUpon>volante_create.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\portal\header.aspx.resx">
+      <DependentUpon>header.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\portal\headerexpanded.aspx.resx">
+      <DependentUpon>headerexpanded.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\portal\index.aspx.resx">
+      <DependentUpon>index.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\portal\main.aspx.resx">
+      <DependentUpon>main.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gestion\workflow\engine\run_task_app.aspx.resx">
+      <DependentUpon>run_task_app.aspx.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BOComponents\BOComponents.csproj">
+      <Project>{dd7f316c-74fc-4432-9b71-058f142c0fda}</Project>
+      <Name>BOComponents</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50077</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:52646/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

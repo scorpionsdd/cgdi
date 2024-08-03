@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="ResMimeType">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="Version">
+		<value>1.0.0.0</value>
+	</resheader>
+	<resheader name="Reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="Writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="900">
+		<value>DataServer</value>
+	</data>
+	<data name="901">
+		<value>ECEParticipantsMgr.CUser.DoLogon</value>
+	</data>
+	<data name="902">
+		<value>ECEParticipantsMgr.CUser.DoSign</value>
+	</data>
+	<data name="903">
+		<value>ECEParticipantsMgr.CUser.DoSign</value>
+	</data>
+	<data name="904">
+		<value>ECEParticipantsMgr.CUser.Password</value>
+	</data>
+	<data name="905">
+		<value>ECEParticipantsMgr.CUser.Sign</value>
+	</data>
+	<data name="906">
+		<value>ECEParticipantsMgr.CUser.Alias</value>
+	</data>
+	<data name="907">
+		<value>ECEParticipantsMgr.CPerson.IsFema</value>
+	</data>
+	<data name="908">
+		<value>ECEParticipantsMgr.CUser.UseInformalTreatment</value>
+	</data>
+	<data name="909">
+		<value>User/Person</value>
+	</data>
+	<data name="910">
+		<value>El usuario inició la sesión de trabajo referida.</value>
+	</data>
+	<data name="911">
+		<value>El usuario cerró la sesión de trabajo referida.</value>
+	</data>
+	<data name="1000">
+		<value>EXECUTE spDoLogon</value>
+	</data>
+	<data name="1001">
+		<value>EXECUTE spDoLogout</value>
+	</data>
+	<data name="1002">
+		<value>EXECUTE spDoSign</value>
+	</data>
+	<data name="1003">
+		<value>EXECUTE spGetUserStrXAttrWithUserId</value>
+	</data>
+	<data name="1004">
+		<value>EXECUTE spGetParticipantStrXAttr</value>
+	</data>
+	<data name="1005">
+		<value>EXECUTE spGetParticipantNumXAttr</value>
+	</data>
+	<data name="1006">
+		<value>EXECUTE spGetParticipantName</value>
+	</data>
+	<data name="1007">
+		<value>EXECUTE spGetParticipantStatus</value>
+	</data>
+	<data name="1008">
+		<value>EXECUTE spGetParticipantType</value>
+	</data>
+	<data name="1009">
+		<value>EXECUTE spParticipantRelatedInstances</value>
+	</data>
+	<data name="1010">
+		<value>EXECUTE spCreateSession</value>
+	</data>
+	<data name="1011">
+		<value>EXECUTE spCreateAuthorization</value>
+	</data>
+	<data name="1012">
+		<value>EXECUTE spGetUserDefaultDesktopId</value>
+	</data>
+</root>

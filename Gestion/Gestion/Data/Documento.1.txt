@@ -1,0 +1,367 @@
+Select * From (Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte 
+	From ( Select 	Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, sof_documento.documento_bis_id, Sof_Remitente_Area.Area RemitenteArea, Sof_Remitente_Titular.Nombre RemitenteNombre, sof_documento.destinatario_area_id destinatarioAreaId, 
+					sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, 
+					sof_documento.observacion  
+			From 	Sof_Documento, 
+					Sof_Areas Sof_Destinatario_Area, 
+					(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular, 
+					(Select distinct ID_AREA, Area from hint_v_usuarios where area is not null) sof_remitente_area , 
+					Hint_v_Usuarios Sof_Remitente_Titular  
+			Where 	1=1 
+			And 	Sof_documento.Usuario_ID IN (76074,76074)  
+			And 	Sof_documento.Destinatario_area_id  LIKE '%'  
+			And 	Sof_documento.Estatus LIKE '%'  
+			And 	Sof_documento.Tipo_Documento_Id LIKE '%'  
+			And 	Sof_documento.Tipo_Remitente = 'I'   
+			And 	sof_remitente_area.clave_area(+) = sof_documento.Remitente_Area_ID  
+			And 	sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_ID  
+			And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+			And 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+			And 	(lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') 
+			and 	trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') and trunc(fecha_elaboracion) <= to_date('24/09/2007')  
+			UNION ALL  
+			Select 	Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, sof_documento.documento_bis_id, Sof_Remitente_Externo.Dependencia RemitenteArea, Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, sof_documento.destinatario_area_id\tdestinatarioAreaId, 
+					sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, sof_documento.observacion  
+			From 	Sof_Documento, 
+					sof_areas Sof_Destinatario_Area, 
+					(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular,  
+					Sof_Remitente_Externo ,  
+					Sof_Remitente_Externo_titular   
+			Where 	1=1 
+			And 	Sof_documento.Usuario_ID IN (76074,76074)  
+			And 	Sof_documento.Destinatario_area_id  LIKE '%'  
+			And 	Sof_documento.Estatus LIKE '%'  
+			And 	Sof_documento.Tipo_Documento_Id LIKE '%'  
+			And 	Sof_documento.Tipo_Remitente = 'E'  
+			And 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+			And 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID  
+			And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+			And 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+			And 	(lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') 
+			and 	trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') 
+			and 	trunc(fecha_elaboracion) <= to_date('24/09/2007')  ) SD, 
+	sof_documento_relacionado 
+	WHERE 	sof_documento_relacionado.documento_id = sd.documento_id(+) 
+	and 	sof_documento_relacionado.estatus = sd.statusvolante 
+	order by sd.destinatarioAreaId, sd.volante DESC  ) 
+sdaux
+	
+
+----------------------------------
+
+Select * 
+From (Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte From ( Select Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, 
+sof_documento.documento_bis_id, 
+
+sof_documento.destinatario_area_id\tdestinatarioAreaId, sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, sof_documento.observacion  \nFrom Sof_Documento, (Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, (Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular, (Select distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area , Hint_v_Usuarios Sof_Remitente_Titular  \n Where 1=1 And Sof_documento.Usuario_ID IN (76074,76074)  And Sof_documento.Destinatario_area_id  LIKE '%'  And Sof_documento.Estatus LIKE 'Pendiente'  And Sof_documento.Tipo_Documento_Id LIKE '%'  And Sof_documento.Tipo_Remitente = 'I'   And sof_remitente_area.clave_area(+) = sof_documento.Remitente_Area_ID  And sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_ID  And Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  And Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  And (lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') and trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') and trunc(fecha_elaboracion) <= to_date('26/09/2007')  \n  UNION ALL  \n Select Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, sof_documento.documento_bis_id, Sof_Remitente_Externo.Dependencia RemitenteArea, Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, sof_documento.destinatario_area_id\tdestinatarioAreaId, sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, sof_documento.observacion  \nFrom Sof_Documento, (Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, (Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular,  Sof_Remitente_Externo ,  Sof_Remitente_Externo_titular   \n Where 1=1 And Sof_documento.Usuario_ID IN (76074,76074)  And Sof_documento.Destinatario_area_id  LIKE '%'  And Sof_documento.Estatus LIKE 'Pendiente'  And Sof_documento.Tipo_Documento_Id LIKE '%'  And Sof_documento.Tipo_Remitente = 'E'  And Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID And Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID  And Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  And Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  And (lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') and trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') and trunc(fecha_elaboracion) <= to_date('26/09/2007')  ) SD, sof_documento_relacionado WHERE sof_documento_relacionado.documento_id = sd.documento_id and (sof_documento_relacionado.estatus = sd.statusvolante  or sof_documento_relacionado.estatus = 'Sin Tramite') \n order by sd.destinatarioAreaId, sd.volante DESC  ) sdaux "	string
+
+----------------------------------
+
+Select documento_id, destinatarioAreaId, Destinatario_Cve_Area, substr(destinatarioArea,1,70)
+From (Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte 
+	From ( Select 	
+					Sof_Documento.Documento_ID, 
+					sof_documento.asunto, 
+					sof_documento.resumen, 
+					sof_documento.usuario_id, 
+					sof_documento.volante, 
+					Sof_Documento.Tipo_Remitente, 
+					Sof_Documento.Referencia, 
+					Sof_Documento.Fecha_Documento_Fuente, 
+					Sof_Documento.Fecha_Elaboracion, 
+					sof_documento.documento_bis_id, 
+					Sof_Remitente_Area.Area RemitenteArea, 
+					Sof_Remitente_Titular.Nombre RemitenteNombre, 
+					sof_documento.destinatario_area_id destinatarioAreaId, 
+					sof_destinatario_area.area destinatarioArea, 
+					sof_destinatario_titular.nombre destinatarioNombre, 
+					sof_documento.estatus StatusVolante, 
+					sof_documento.observacion,
+					to_char(Sof_Remitente_Area.cve_area) Remitente_Cve_Area,
+					to_char(Sof_Destinatario_Area.cve_area) Destinatario_Cve_Area
+			From 	Sof_Documento,
+					Sof_Empleados Sof_Destinatario_Titular,
+					Sof_Empleados Sof_Remitente_Titular,
+					sof_areas Sof_Remitente_Area,
+					sof_areas Sof_Destinatario_Area
+			Where 	1=1 
+			And 	Sof_documento.Usuario_Id IN (76074,76074)  
+			And 	Sof_documento.Destinatario_area_id  LIKE '%'  
+			And 	Sof_documento.Estatus LIKE '%'  
+			And 	Sof_documento.Tipo_Documento_Id LIKE '%'  
+			And 	Sof_documento.Tipo_Remitente = 'I'   
+			And 	sof_remitente_area.id_area(+) = sof_documento.Remitente_Area_ID  
+			And 	sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_ID  
+			And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+			And 	Sof_Destinatario_Area.id_Area(+) = sof_documento.Destinatario_Area_ID  
+			And 	(lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') 
+			and 	trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') and trunc(fecha_elaboracion) <= to_date('24/09/2007')  
+			UNION ALL  
+			Select 	Sof_Documento.Documento_ID, 
+					sof_documento.asunto, 
+					sof_documento.resumen, 
+					sof_documento.usuario_id, 
+					sof_documento.volante, 
+					Sof_Documento.Tipo_Remitente, 
+					Sof_Documento.Referencia, 
+					Sof_Documento.Fecha_Documento_Fuente, 
+					Sof_Documento.Fecha_Elaboracion, 
+					sof_documento.documento_bis_id, 
+					Sof_Remitente_Externo.Dependencia RemitenteArea, 
+					Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, 
+					sof_documento.destinatario_area_id destinatarioAreaId, 
+					sof_destinatario_area.area destinatarioArea, 
+					sof_destinatario_titular.nombre destinatarioNombre, 
+					sof_documento.estatus StatusVolante, 
+					sof_documento.observacion,
+					('') Remitente_Cve_Area,
+					to_char(sof_destinatario_area.cve_area) Destinatario_Cve_Area
+			From 	Sof_Documento, 
+					sof_areas Sof_Destinatario_Area, 
+					Hint_v_Usuarios Sof_Destinatario_Titular,  
+					Sof_Remitente_Externo ,  
+					Sof_Remitente_Externo_titular   
+			Where 	1=1 
+			And 	Sof_documento.Usuario_Id IN (76074,76074)  
+			And 	Sof_documento.Destinatario_area_id  LIKE '%'  
+			And 	Sof_documento.Estatus LIKE '%'  
+			And 	Sof_documento.Tipo_Documento_Id LIKE '%'  
+			And 	Sof_documento.Tipo_Remitente = 'E'  
+			And 	Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID 
+			And 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID  
+			And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+			And 	Sof_Destinatario_Area.Id_Area(+) = sof_documento.Destinatario_Area_ID  
+			And 	(lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') 
+			and 	trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') 
+			and 	trunc(fecha_elaboracion) <= to_date('24/09/2007')  
+		) SD, Sof_Documento_Relacionado 
+	WHERE 	sof_documento_relacionado.documento_id = sd.documento_id(+) 
+	AND 	sof_documento_relacionado.estatus = sd.statusvolante 
+	ORDER BY sd.destinatarioAreaId, sd.volante DESC  ) 
+sdaux
+/
+
+
+
+
+Estructura Query
+Select * 
+From (Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte From ( Select Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, 
+sof_documento.documento_bis_id, 
+sof_documento.destinatario_area_id\tdestinatarioAreaId, sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, sof_documento.observacion  \nFrom Sof_Documento, (Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, (Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular, (Select distinct clave_area, area from hint_v_usuarios where area is not null) sof_remitente_area , Hint_v_Usuarios Sof_Remitente_Titular  \n 
+Where 1=1 
+And 	Sof_documento.Usuario_ID IN (76074,76074)  
+And 	Sof_documento.Destinatario_area_id  LIKE '%'  
+And 	Sof_documento.Estatus LIKE 'Pendiente'  
+And 	Sof_documento.Tipo_Documento_Id LIKE '%'  
+And 	Sof_documento.Tipo_Remitente = 'I'   
+
+And 	sof_remitente_area.clave_area(+) = sof_documento.Remitente_Area_ID  
+And 	sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_ID  
+
+And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  
+And 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  
+And 	(lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') and trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') and trunc(fecha_elaboracion) <= to_date('26/09/2007')  \n  UNION ALL  \n Select Sof_Documento.Documento_ID, sof_documento.asunto, sof_documento.resumen, sof_documento.usuario_id, sof_documento.volante, Sof_Documento.Tipo_Remitente, Sof_Documento.Referencia, Sof_Documento.Fecha_Documento_Fuente, Sof_Documento.Fecha_Elaboracion, sof_documento.documento_bis_id, Sof_Remitente_Externo.Dependencia RemitenteArea, Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, sof_documento.destinatario_area_id\tdestinatarioAreaId, sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, sof_documento.observacion  \nFrom Sof_Documento, (Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, (Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular,  Sof_Remitente_Externo ,  Sof_Remitente_Externo_titular   \n Where 1=1 And Sof_documento.Usuario_ID IN (76074,76074)  And Sof_documento.Destinatario_area_id  LIKE '%'  And Sof_documento.Estatus LIKE 'Pendiente'  And Sof_documento.Tipo_Documento_Id LIKE '%'  And Sof_documento.Tipo_Remitente = 'E'  And Sof_Remitente_Externo.Remitente_Externo_ID(+) = Sof_Documento.Remitente_Area_ID And Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_ID(+) = Sof_Documento.Remitente_ID  And Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_ID  And Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_ID  And (lower(Sof_Documento.asunto) like '%%' OR lower(Sof_Documento.resumen) like '%%') and trunc(sof_documento.fecha_elaboracion) >= to_date('01/01/2007') and trunc(fecha_elaboracion) <= to_date('26/09/2007')  ) SD, sof_documento_relacionado WHERE sof_documento_relacionado.documento_id = sd.documento_id and (sof_documento_relacionado.estatus = sd.statusvolante  or sof_documento_relacionado.estatus = 'Sin Tramite') \n order by sd.destinatarioAreaId, sd.volante DESC  ) sdaux "	string
+
+----------------------------------
+
+Select  *
+From (Select SD.*, ('') TurnadoArea, decode(statusvolante,'Pendiente',sysdate,'Tramite', sysdate, 'Concluido',fecha_hasta) fecha_corte 
+	From ( Select 	
+					Sof_Documento.Documento_ID, 
+					sof_documento.asunto, 
+					sof_documento.resumen, 
+					sof_documento.usuario_id, 
+					sof_documento.volante, 
+					Sof_Documento.Tipo_Remitente, 
+					Sof_Documento.Referencia, 
+					Sof_Documento.Fecha_Documento_Fuente, 
+					Sof_Documento.Fecha_Elaboracion, 
+					sof_documento.documento_bis_id, 
+					Sof_Remitente_Area.Area RemitenteArea, 
+					Sof_Remitente_Titular.Nombre RemitenteNombre, 
+					sof_documento.destinatario_area_id destinatarioAreaId, 
+					sof_destinatario_area.area destinatarioArea, 
+					sof_destinatario_titular.nombre destinatarioNombre, 
+					sof_documento.estatus StatusVolante, 
+					sof_documento.observacion,
+					to_char(Sof_Remitente_Area.cve_area) Remitente_Cve_Area,
+					to_char(Sof_Destinatario_Area.cve_area) Destinatario_Cve_Area
+			From 	Sof_Documento,
+					Sof_Empleados Sof_Destinatario_Titular,
+					Sof_Empleados Sof_Remitente_Titular,
+					sof_areas Sof_Remitente_Area,
+					sof_areas Sof_Destinatario_Area
+			Where 	1=1
+			And 	Sof_documento.Usuario_ID IN (<@USERS@>) " +
+			And 	Sof_documento.Destinatario_area_id <@SENDAREAID@> " +
+			And 	Sof_documento.Estatus LIKE <@STATUSVOLANTE@> " +
+			And 	Sof_documento.Tipo_Documento_Id LIKE <@DOCUMENTTYPE@> " +
+			And		Sof_documento.Tipo_Remitente = 'I' " +
+			And 	sof_remitente_area.id_area(+) = sof_documento.Remitente_Area_Id
+			And 	sof_remitente_titular.id_usuario(+) = Sof_Documento.Remitente_Id
+			And 	Sof_Destinatario_Titular.ID_Usuario(+) = Sof_Documento.Destinatario_Id " +
+			And 	Sof_Destinatario_Area.Clave_Area(+) = sof_documento.Destinatario_Area_Id " +
+			And 	(lower(Sof_Documento.asunto) like '%<@TEXTSEARCH@>%' OR lower(Sof_Documento.resumen) like '%<@TEXTSEARCH@>%')" +
+			And 	TRUNC(sof_documento.fecha_elaboracion) >= to_date('<@ELABORATIONDATE@>') 
+			And 	TRUNC(fecha_elaboracion) <= to_date('<@ELABORATIONDATE@>') 
+			UNION ALL  
+			Select 	Sof_Documento.Documento_ID,
+					sof_documento.asunto,
+					sof_documento.resumen, 
+					sof_documento.usuario_id, 
+					sof_documento.volante, 
+					Sof_Documento.Tipo_Remitente, 
+					Sof_Documento.Referencia, 
+					Sof_Documento.Fecha_Documento_Fuente, 
+					Sof_Documento.Fecha_Elaboracion, 
+					sof_documento.documento_bis_id, 
+					Sof_Remitente_Externo.Dependencia RemitenteArea, 
+					Sof_Remitente_Externo_Titular.Nombre RemitenteNombre, 
+					sof_documento.destinatario_area_id destinatarioAreaId, 
+					sof_destinatario_area.area destinatarioArea, 
+					sof_destinatario_titular.nombre destinatarioNombre, 
+					sof_documento.estatus StatusVolante, 
+					sof_documento.observacion,
+					('') Remitente_Cve_Area,
+					to_char(sof_destinatario_area.cve_area) Destinatario_Cve_Area
+			From 	Sof_Documento, 
+					sof_areas Sof_Destinatario_Area, 
+					Sof_Empleados Sof_Destinatario_Titular,  
+					Sof_Remitente_Externo,
+					Sof_Remitente_Externo_titular
+			Where 	1=1 
+			And 	Sof_documento.Usuario_Id IN (<@USERS@>)  
+			And 	Sof_documento.Destinatario_area_id <@SENDAREAID@>
+			And 	Sof_documento.Estatus LIKE '<@STATUSVOLANTE@>'  
+			And 	Sof_documento.Tipo_Documento_Id LIKE <@DOCUMENTTYPE@>  
+			And 	Sof_documento.Tipo_Remitente = 'E'  
+			And 	Sof_Remitente_Externo.Remitente_Externo_Id(+) = Sof_Documento.Remitente_Area_Id
+			And 	Sof_Remitente_Externo_Titular.Remitente_Externo_Titular_Id(+) = Sof_Documento.Remitente_Id
+			And 	Sof_Destinatario_Titular.Id_Usuario(+) = Sof_Documento.Destinatario_Id
+			And 	Sof_Destinatario_Area.Id_Area(+) = sof_documento.Destinatario_Area_Id
+			And 	(lower(Sof_Documento.asunto) like '%<@TEXTSEARCH@>%' OR lower(Sof_Documento.resumen) like '%<@TEXTSEARCH@>%') 
+			And 	TRUNC(sof_documento.fecha_elaboracion) >= TO_DATE('<@ELABORATIONDATE@>') 
+			And 	TRUNC(fecha_elaboracion) <= TO_DATE('<@ELABORATIONDATE@>')
+		) SD, Sof_Documento_Relacionado 
+	WHERE 	sof_documento_relacionado.documento_id = sd.documento_id(+) 
+	AND 	sof_documento_relacionado.estatus = sd.statusvolante 
+	ORDER BY sd.destinatarioAreaId, sd.volante DESC  ) 
+sdaux
+/
+
+create table sof_mapeo_regla (
+ regla_id                    		NUMBER(12) not null,
+ regla_bis_id                  		NUMBER(12) NOT NULL
+ )
+ 
+SELECT sof_empleados.id_area, sof_empleados.clave_area
+FROM    sof_empleados,
+   (       select  sof_areas.id_area, sof_areas.cve_area
+           from    sof_areas
+           Where   sof_areas.fecha_inicio <= '20/09/2007' and sof_areas.fecha_fin >= '20/09/2007'
+   ) tmp
+where sof_empleados.clave_area = tmp.cve_area
+
+UPDATE sof_regla
+SET  tipo_documento_empleado = (  Select  max(sof_empleados.id_empleado)
+                   		From    sof_empleados
+                   		Where   sof_regla.tipo_documento = to_number(sof_empleados.clave_empleado)
+						And     fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+                    )
+Where Exists (  Select 1
+                From   	sof_empleados
+                Where  	sof_regla.usuario_id = to_number(sof_empleados.clave_empleado)
+	        	And     fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+ 			)
+/
+
+UPDATE sof_regla
+SET  tipo_documento_area = ( 	Select 	max(sof_areas.id_area)
+                 	From   	sof_areas
+                 	Where  	sof_regla.tipo_documento = sof_areas.cve_area
+                   	And   	fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+                )
+Where  Exists 	( 	Select 1
+                 	From   	sof_areas
+                 	Where 	sof_regla.tipo_documento = sof_areas.cve_area
+     				And   	fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+				)
+/
+
+
+UPDATE sof_regla
+SET  id_empleado = ( 	Select 	max(sof_empleados.id_empleado)
+                 		From   	sof_empleados
+                 		Where  	sof_regla.usuario_id = sof_empleados.clave_empleado
+                   		And   	fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+                	)
+Where  Exists 	( 	Select 1
+                 	From   	sof_empleados
+                 	Where 	sof_regla.usuario_id = sof_empleados.clave_empleado
+     				And   	fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+				)
+/
+
+UPDATE sof_regla
+SET  tipo_documento = decode(tipo_documento_area,0,'Emp', 'Area')
+
+
+
+UPDATE sof_tipo_documento
+SET  id_empleado = (  Select  max(sof_empleados.id_empleado)
+                   		From    sof_empleados
+                   		Where   sof_tipo_documento.usuario_id = to_number(sof_empleados.clave_empleado)
+						And     fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+                    )
+Where Exists (  Select 1
+                From   	sof_empleados
+                Where  	sof_tipo_documento.usuario_id = to_number(sof_empleados.clave_empleado)
+	        	And     fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+ 			)
+/
+
+UPDATE sof_tipo_documento
+SET  id_area = ( 	Select 	max(sof_areas.id_area)
+                 	From   	sof_areas
+                 	Where  	sof_tipo_documento.usuario_id = sof_areas.cve_area
+                   	And   	fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+                )
+Where  Exists 	( 	Select 1
+                 	From   	sof_areas
+                 	Where 	sof_tipo_documento.usuario_id = sof_areas.cve_area
+     				And   	fecha_inicio <= '20/09/2007' And fecha_fin >= '20/09/2007'
+				)
+/
+ 
+
+ 
+select sof_empleados.login from sof_empleados
+where    login = ( SELECT hint_v_usuarios.login
+                FROM   hint_v_usuarios
+                WHERE  sof_empleados.id_usuario = hint_v_usuarios.id_usuario )
+
+
+
+
+Select * From (Select <@DOCUMENT@><@TURN@> From ( 
+
+Select 	Sof_Documento.Documento_ID, 
+		sof_documento.asunto, 
+		sof_documento.resumen, 
+		sof_documento.usuario_id, 
+		sof_documento.volante, 
+		Sof_Documento.Tipo_Remitente, 
+		Sof_Documento.Referencia, 
+		Sof_Documento.Fecha_Documento_Fuente, 
+		Sof_Documento.Fecha_Elaboracion, 
+		sof_documento.documento_bis_id, 
+		<@SENDERAREACOLUMN@>, <@SENDERNAMECOLUMN@>, 
+		sof_documento.destinatario_area_id destinatarioAreaId, 
+		sof_destinatario_area.area destinatarioArea, sof_destinatario_titular.nombre destinatarioNombre, sof_documento.estatus StatusVolante, sof_documento.observacion "
+
+
+From Sof_Documento, 
+	(Select DISTINCT Clave_Area, Area FROM Hint_v_Usuarios WHERE Area is not null) Sof_Destinatario_Area, 
+	(Select ID_Usuario, Nombre FROM Hint_v_Usuarios) Sof_Destinatario_Titular, <@SENDERAREA@>, <@SENDERNAME@> "
+

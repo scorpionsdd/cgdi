@@ -1,0 +1,750 @@
+body
+{
+}
+
+/*Se utiliza en el control WUCIndiceCanal*/
+.subtituloListado
+{
+	font-family:"Arial";
+	font-size:11px;
+	color:black;
+}
+/***/
+
+/*Se utiliza en diferentes controles*/
+.btnIr
+{
+		position: absolute;
+		top:72px;
+		left:auto;
+}
+
+.Transp
+{
+		position: absolute;
+		top:0px;
+		left:auto;
+}
+
+.pnlNombre
+{
+		position: absolute;
+		top:5px;
+		left:auto;
+		width:500;
+}
+.pnlBanco
+{
+
+		position: absolute;
+		top:15px;
+		left:auto;
+		width:500;
+		font-size:11px; 
+	font-family:Verdana;
+	color:White;
+}
+
+.SitePath
+{
+	font-family:Verdana, Helvetica, sans-serif;
+	font-size: 7pt;
+	cursor: hand;
+}
+.SitePath:link
+{
+	font-family:Verdana, Helvetica, sans-serif;
+	font-size: 7pt;
+	cursor: hand;
+	text-decoration:none;
+}
+.SitePath:visited
+{
+	font-family:Verdana, Helvetica, sans-serif;
+	font-size: 7pt;
+	cursor: hand;
+	text-decoration:none;
+}
+.SitePath:hover
+{
+	font-family:Verdana, Helvetica, sans-serif;
+	font-size: 7pt;
+	text-decoration:underline;
+}
+/**/
+
+/*Titulos template recomendar*/
+
+.grayText
+{
+	font-family:Verdana;
+	font-size : 7pt; 
+	color:#506165;
+	text-decoration:none
+}	
+
+.grayText:link
+{
+	font-family:Verdana;
+	font-size : 7pt; 
+	color:#506165;
+	text-decoration:none
+}	
+
+.grayText:visited
+{
+	font-family:Verdana;
+	font-size : 7pt; 
+	color:#506165;
+	text-decoration:none
+}	
+.grayText:hover
+{
+	font-family:Verdana;
+	font-size : 7pt; 
+	color:#506165;
+	text-decoration:underline;
+}	
+
+.titulo
+{
+	font-family:Verdana;
+	font-size:11px;
+	color:Teal;
+	font-weight:bold;
+	text-decoration:none
+}	
+
+.titulos
+{
+	font-family:Verdana;
+	font-size:11px;
+	color:Black;
+	font-weight:bold;
+	text-decoration:none
+}	
+
+.titulos_contenido
+{
+	font-family:Verdana;
+	font-size:9px;
+	color:Black;
+	font-weight:bold
+}
+/*Termina titulos*/
+
+/*Header*/
+.headerFecha
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:White
+}
+.headerFecha:link
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:White;
+	text-decoration:none;
+}
+.headerFecha:visited
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:White;
+	text-decoration:none;
+}
+.headerFecha:hover
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:White;
+	text-decoration:underline;
+}
+.header
+{
+	font-family:Verdana;
+	font-size:10pt;
+	color:#6E8088
+}
+.header:link
+{
+	font-family:Verdana;
+	font-size:10pt;
+	color:#6E8088;
+	text-decoration:none;
+}
+.header:visited
+{
+	font-family:Verdana;
+	font-size:10pt;
+	color:#6E8088;
+	text-decoration:none;
+}
+.header:hover
+{
+	font-family:Verdana;
+	font-size:10pt;
+	color:#6E8088;
+	text-decoration:none;
+}
+
+.header2
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:white
+}
+
+.header2:link
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:white;
+	text-decoration:none;
+}
+.header2:visited
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:white;
+	text-decoration:none;
+}
+.header2:hover
+{
+	font-family:Verdana;
+	font-size:7pt;
+	color:white;
+	text-decoration:none;
+}
+/*Termina Header*/
+
+/*Menu*/
+.menusup1
+{ 
+	font-size:10px; 
+	font-family:Verdana;
+	color:White
+}
+.menusup /* 2do nivel menu */
+{ 
+	font-size : 8pt; 
+	font-family   :  Verdana;
+	color   : White;
+	text-decoration:none;
+}
+.menusup2 /* 2do nivel menu */
+{ 
+	font-size : 8pt; 
+	font-family   :  Verdana;
+	color   : #506165;
+	text-decoration:none;
+	background-color: #99cccc;
+}
+
+.Transparencia_center
+{ 
+	text-align:center;
+	font-size : 7pt; 
+	font-family   :  Verdana;
+	color   :#506165;
+	text-decoration:none;
+	font-weight:bold
+	
+}
+.Transparencia_center:visited
+{ 
+	text-align:center;
+	font-size : 7pt; 
+	font-family   :  Verdana;
+	color   :#506165;
+	text-decoration:none;
+	font-weight:bold
+	
+}
+.Transparencia_center:hover
+{ 
+	text-align:center;
+	font-size : 7pt; 
+	font-family   :  Verdana;
+	color:#506165;
+	text-decoration:underline
+	
+}
+.Navegacion_center
+{ 
+	text-align:center;
+	font-size : 7pt; 
+	font-family   :  Verdana;
+	color   :White;
+	text-decoration:none;
+	font-weight:bold
+	
+}
+.Navegacion_center:visited
+{ 
+	text-align:center;
+	font-size : 7pt; 
+	font-family   :  Verdana;
+	color   :White;
+	text-decoration:none;
+	font-weight:bold
+	
+}
+.Navegacion_center:hover
+{ 
+	text-align:center;
+	font-size : 7pt; 
+	font-family   :  Verdana;
+	color:White;
+	text-decoration:underline
+	
+}
+.menusup_root /* 1er nivel menu */
+{ 
+	text-align:left ;
+	font-size : 8pt; 
+	font-family   :  Verdana;
+	color   : White;
+	text-decoration:none;
+}
+.menusup_hover1
+{  	
+	font-size : 8pt; 
+	background-color :White;
+	font-family   :  Verdana;
+	color   :   Navy  ;
+}
+.menusup_hover /* 2do nivel menu hover */
+{  	
+	font-size : 8pt; 
+	font-family   :  Verdana;
+	color   : White;
+	text-decoration:none;
+}
+.menusup_hover_center /* 1er nivel menu hover */
+{  	
+	text-align:center ;
+	font-size : 8pt; 
+	background-color :White;
+	font-family   :  Verdana;
+	color   :   white  ;
+}
+/*Termina Menu*/
+
+/*PH Contenidos*/
+.normaltext
+{
+	color:Black;
+	font-size : 8pt; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+
+.normaltext1
+{
+	color:#506165;
+	font-size : 8pt; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+
+.etiquetaerror
+{
+	color:Red;
+	font-size : 8pt; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+/**/
+
+/*Footer*/
+.normaltext-white
+{
+	color : White;
+	font-size : 9px; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+.normaltext-white:link
+{
+	color : White;
+	font-size : 9px; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+.normaltext-white:visited
+{
+	color : White;
+	font-size : 9px; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+.normaltext-white:hover
+{
+	color: white;
+	font-family: Verdana;
+	font-size: 9px;
+	text-decoration:underline;
+}
+/*Termina Footer*/
+
+/*Diferentes Secciones (RutaNaveacion)*/
+.texto7
+{
+	font-size: 7pt;
+	font-family: Verdana;
+	color: black;
+	text-decoration:none
+	
+}
+.texto7_bold
+{
+	font-size: 7pt;
+	font-family: Verdana;
+	color: black;
+	font-weight:bold;
+	text-decoration:none;
+
+}
+.texto7_bold_navy
+{
+	font-size: 8pt;
+	font-family: Verdana;
+	color: navy;
+	font-weight:bold;
+	text-decoration:none;
+
+}
+.texto7:link
+{
+	font-size: 7pt;
+	font-family: Verdana;
+	color : navy;
+	text-decoration:none;
+}
+.texto7:visited
+{
+	font-size: 7pt;
+	font-family: Verdana;
+	color : navy;
+	text-decoration:none;
+}
+.texto7:hover
+{
+	font-size: 7pt;
+	font-family: Verdana;
+	color : navy;
+	text-decoration:underline;
+}
+.texto7:active
+{
+	font-size: 7pt;
+	font-family: Verdana;
+	color : #CC0000;
+	text-decoration:underline;
+}
+/*Termina Menu Izd*/
+
+/*Controles llenado al centro del home*/
+.texto8
+{
+	font-size:8pt;
+	font-family:Verdana;
+	color : black;
+	text-decoration: none;
+}
+.texto8:link
+{
+	font-size: 8pt;
+	font-family: Verdana;
+	color : navy;
+	text-decoration:none;
+}
+.texto8:visited
+{
+	font-size: 8pt;
+	font-family: Verdana;
+	color : navy;
+	text-decoration:none;
+}
+.texto8:hover
+{
+	font-size: 8pt;
+	font-family: Verdana;
+
+}
+A
+{
+	font-size:8pt;
+	font-family:Verdana;
+	color : navy;
+	text-decoration: none;
+}
+A:visited
+{
+	font-size:8pt;
+	font-family:Verdana;
+	color : navy;
+	text-decoration: none;
+}
+A:hover
+{
+	font-size: 8pt;
+	font-family: Verdana;
+	color : navy;
+	text-decoration:underline;
+}
+.texto8_bold
+{
+	font-size : 8pt; 
+	font-family : Verdana;
+	font-weight:bold;
+}
+.texto8_red
+{
+	color:Red;
+	font-size : 9pt;
+	font-family : Verdana
+}
+.texto8_navy
+{
+	color:Navy;
+	font-size : 8pt;
+	font-family : Verdana
+}
+.texto8_navy:hover
+{
+	color:Navy;
+	font-size: 8pt;
+	font-family: Verdana;
+	text-decoration:underline
+}
+.texto8_white
+{
+	color:White;
+	font-size : 8pt;
+	font-family : Verdana
+}
+.texto9
+{
+	font-size:8pt;
+	font-family:Verdana;
+}
+.texto9_bold
+{
+	font-size : 8pt; 
+	font-family : Verdana;
+	font-weight:bold;
+}
+.texto9_white
+{
+	color:White;
+	font-size : 8pt;
+	font-family : Verdana;
+}
+.texto9_white:link
+{
+	color : White;
+	font-size : 8pt;
+	font-family : Verdana;
+	text-decoration : none;
+}
+.texto9_white:hover
+{
+	color : White;
+	font-size : 8pt;
+	font-family : Verdana;
+	text-decoration : underline;
+}
+.texto9_white:visited
+{
+	color : White;
+	font-size : 8pt;
+	font-family : Verdana;
+	text-decoration : none;
+}
+/*Termina PH*/
+
+/*Postig*/
+.PostingTitle
+{
+	font-family: Verdana;
+	font-size: 11pt;
+	color: #000000;
+	font-weight: bold;
+}
+.Posting
+{
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #000000;
+	font-weight: bold;
+}
+/*Termina Posting*/
+
+/*Eventos, Calendario*/
+
+.Day
+{
+	color: #000000;
+	font-size: 9;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	cursor: hand;
+}
+
+.WeekEndDay
+{
+	color: #000000;
+	font-size: 9;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+.Event_Day
+{
+	background-color: #dde6d9;
+	font-size: 9;
+	font-weight:bold;
+	font-family: Verdana;
+	text-decoration:blink;
+	cursor: hand;
+}
+.DayHeader
+{
+	color: #000000;
+	font-size: 10;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	cursor: default;
+	font-weight: bold;
+}
+
+.CalendarTitle
+{
+	color: #FFFFFF;
+	font-size: 10;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	cursor:default;
+	font-weight: bold;
+}
+
+.TDST_T
+{
+	color: #000000;
+	font-size: 8pt;
+	font-family: Verdana
+}
+
+.TDST
+{
+	color: #000000;
+	font-size: 8pt;
+	font-family: Verdana
+}
+/*Termina Eventos-Calendario*/
+
+/*Mapa de Sitio*/
+.SearchItem
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: 000000;
+    text-decoration:none;
+}
+.SearchItem:link
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: navy;
+    text-decoration:none;
+}
+.SearchItem:visited
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: navy;
+    text-decoration:none;
+}
+.SearchItem:hover
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: navy;
+    text-decoration:underline;
+}
+/*Termina MapaSite*/
+
+/*Recomienda*/
+.bodylink_7
+{
+	color:Black;
+	font-size : 8pt; 
+	font-family : Verdana
+}
+/**/
+
+/*Links_Noticias*/
+.bodylink
+{
+	font-size : 8pt; 
+	font-family : Verdana;
+}
+.bodylink:link
+{
+	font-size : 8pt; 
+	font-family : Verdana;
+	color : navy;
+	text-decoration:none;
+}
+.bodylink:visited
+{
+	font-size : 8pt; 
+	font-family : Verdana;
+	color : navy;
+	text-decoration:none;
+}
+.bodylink:hover
+{
+	font-size : 8pt; 
+	font-family : Verdana;
+	color : navy;
+	text-decoration: underline;
+}
+.bodylink_white
+{
+	color:White;
+	font-size : 7pt; 
+	font-family : Verdana;
+}
+.bodylink_white:link
+{
+	color:White ;
+	font-size : 7pt; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+.bodylink_white:visited
+{
+	color:White ;
+	font-size : 7pt; 
+	font-family : Verdana;
+	text-decoration:none;
+}
+.bodylink_white:hover
+{
+	color: #00a09c;
+	font-size : 7pt; 
+	font-family : Verdana;
+	text-decoration: underline;
+}
+
+/*Termina Links_Noticias*/
+
+/*Balas*/
+.balas
+{
+	list-style-type:square;
+	color:#00a09c;
+}

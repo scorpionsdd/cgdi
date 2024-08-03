@@ -1,0 +1,6 @@
+SELECT     ID_AREA, CVE_AREA, AREA, CVE_AREA_ANT, FECHA_INICIO, FECHA_FIN
+FROM         SOF_AREAS
+WHERE     fecha_inicio <= '20/09/2007' And  fecha_fin >= '20/09/2007'
+ORDER BY CVE_AREA
+
+

@@ -1,0 +1,314 @@
+BODY
+{
+	font-size: 8pt;
+	color: black;
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	background-color: #ffffff;
+}
+A:link
+{
+    COLOR: #8b4513;
+    TEXT-DECORATION: none
+}
+A:visited
+{
+    COLOR: #8b4513;
+    TEXT-DECORATION: none
+}
+A:active
+{
+    COLOR: #8b4513;
+    TEXT-DECORATION: none
+}
+A:hover
+{
+    COLOR: #8b4513;
+    TEXT-DECORATION: underline
+}
+.imageBtn
+{
+    CURSOR: hand
+}
+A.virtualLink
+{
+    COLOR: #c74a36;
+    CURSOR: hand;
+    TEXT-DECORATION: none
+}
+SELECT
+{
+    FONT-FAMILY: Arial, Tahoma, Helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    HEIGHT: 20px
+}
+TEXTAREA
+{
+    FONT-FAMILY: Arial, Tahoma, Helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+INPUT
+{
+    FONT-FAMILY: Arial, Tahoma, Helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    HEIGHT: 20px
+}
+TABLE
+{
+    FONT-FAMILY: Tahoma, Arial, Helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+TABLE.fullScrollMenu
+{
+	border-right: #b0c4de thin outset;
+	border-top: #b0c4de thin outset;
+	border-left: #b0c4de thin outset;
+	width: 100%;
+	border-bottom: #b0c4de thin outset;
+	border-collapse: collapse;
+	background-color: #d4d6cb;
+}
+TABLE.applicationTable
+{
+    BACKGROUND-COLOR: #ffffff;
+    BORDER-BOTTOM: #b0c4de thin outset;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT: #b0c4de thin outset;
+    BORDER-RIGHT: #b0c4de thin outset;
+    BORDER-TOP: #b0c4de thin outset;
+    WIDTH: 100%
+}
+TR.applicationTableHeader
+{
+	border-right: medium none;
+	border-top: medium none;
+	font-size: 8pt;
+	border-left: medium none;
+	color: black;
+	border-bottom: medium none;
+	background-color: #ffffff;
+}
+TR.applicationTableHeader A
+{
+    COLOR: black;
+    FONT-SIZE: 8pt
+}
+TR.applicationTableHeader A:link
+{
+    COLOR: black;
+    FONT-SIZE: 8pt
+}
+TR.applicationTableHeader A:hover
+{
+    COLOR: black;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: underline
+}
+TR.applicationTableHeader A:visited
+{
+    COLOR: black;
+    FONT-SIZE: 8pt
+}
+TR.applicationTableHeader A:active
+{
+    COLOR: black;
+    FONT-SIZE: 8pt
+}
+TABLE.applicationTable TD
+{
+    BORDER-BOTTOM: #dccaa3 thin solid;
+    BORDER-LEFT: #dccaa3 thin solid;
+    PADDING-BOTTOM: 3px;
+    PADDING-LEFT: 3px;
+    PADDING-RIGHT: 3px;
+    PADDING-TOP: 3px;
+
+}
+TR.applicationTableSelectedRow
+{
+	color: black;
+	background-color: #ffffff;
+}
+TR.applicationTableSelectedRow TD
+{
+	border-bottom: #d4c0a9 thin solid;
+	background-color: #ffffff;
+}
+.applicationTitle
+{
+	padding-left: 3px;
+	font-weight: 600;
+	font-size: 9pt;
+	color: black;
+	font-family: Tahoma, Verdana, Arial;
+	background-color: #d4d6cb;
+}
+IMG
+{
+    BORDER-BOTTOM: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    CURSOR: hand
+}
+TABLE.fullScrollMenu TD
+{
+    PADDING-BOTTOM: 2pt;
+    PADDING-LEFT: 2pt;
+    PADDING-RIGHT: 2pt;
+    PADDING-TOP: 2pt;
+}
+TR.fullScrollMenuHeader
+{
+	border-top: medium none;
+	font-size: 8pt;
+	border-left: medium none;
+	color: white;
+	border-bottom: #191970 3px solid;
+	background-color: #ffffff;
+}
+TR.fullScrollMenuHeader A
+{
+    COLOR: white;
+    FONT-SIZE: 8pt
+}
+TR.fullScrollMenuHeader A:active
+{
+    COLOR: white;
+    FONT-SIZE: 8pt
+}
+TR.fullScrollMenuHeader A:hover
+{
+    COLOR: white;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: underline
+}
+TR.fullScrollMenuHeader A:link
+{
+    COLOR: white;
+    FONT-SIZE: 8pt
+}
+TR.fullScrollMenuHeader A:visited
+{
+    COLOR: white;
+    FONT-SIZE: 8pt
+}
+.fullScrollMenuTitle
+{
+	font-weight: bold;
+	font-size: 10pt;
+	color: black;
+	background-color: #00a9a6;
+}
+.cmdSubmit
+{
+	border-right: #bfa08b 1px solid;
+	border-top: #d9ceb3 1px solid;
+	font-size: 11px;
+	background-image: none;
+	border-left: #d9ceb3 1px solid;
+	cursor: hand;
+	color: #000000;
+	border-bottom: #bfa08b 1px solid;
+	background-repeat: repeat;
+	font-family: tahoma,sans-serif;
+	height: 23px;
+	background-color: darkgray;
+	text-decoration: none;
+}
+TABLE.standardPageTable
+{
+	width: 100%;
+	background-color: #ffffff;
+}
+TR.applicationTableRowDivisor
+{
+	color: black;
+	height: 10px;
+	background-color: #6e8088;
+}
+TR.applicationTableRowDivisor TD
+{
+    BORDER-BOTTOM: #c9b49f thin solid;
+    BORDER-LEFT: medium none;
+    BORDER-RIGHT: medium none
+}
+BODY.bdyDialogBox
+{
+    BACKGROUND-COLOR: #a2b9c7;
+    MARGIN: 0px
+}
+TABLE.blockTable A
+{
+    COLOR: white
+}
+TABLE.blockTable A:link
+{
+    COLOR: white
+}
+TABLE.blockTable A:hover
+{
+    COLOR: white;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: underline
+}
+TABLE.blockTable A:visited
+{
+    COLOR: white;
+    FONT-SIZE: 8pt
+}
+TABLE.blockTable A:active
+{
+    COLOR: white;
+    FONT-SIZE: 8pt
+}
+TABLE.blockTable
+{
+	background-color: #ffffff;
+    BORDER-BOTTOM: #008b8b 1px solid;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT: #008b8b 1px solid;
+    BORDER-RIGHT: #008b8b 1px solid;
+    BORDER-TOP: #008b8b 1px solid;
+    COLOR: black;
+    WIDTH: 100%
+}
+TABLE.blockTable TD
+{
+    BORDER-BOTTOM: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    PADDING-BOTTOM: 3px;
+    PADDING-TOP: 3px
+}
+TABLE.noBordersTable
+{
+    background-color: #ffffff;
+    BORDER-BOTTOM: #eadfc0 thin outset;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT: #eadfc0 thin outset;
+    BORDER-RIGHT: #eadfc0 thin outset;
+    BORDER-TOP: #eadfc0 thin outset;
+    MARGIN: 0px;
+    WIDTH: 100%
+}
+TABLE.noBordersTable TD
+{
+    BORDER-BOTTOM: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none
+}
+TR.fullScrollMenuHeader TD
+{
+    BORDER-LEFT: medium none;
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none
+}
+.header-gray
+{
+	font-weight: bold;
+	font-size: 11px;
+	color: #696969;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}

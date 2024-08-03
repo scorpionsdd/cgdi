@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Gestion.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SET_FORMAT" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GLOBAL_FORMAT" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DD/MM/RRRR HH:MI:SS</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
