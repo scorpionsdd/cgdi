@@ -24,7 +24,12 @@
 
 		// Attempt to Validate User Credentials using UsersDB
 		BOComponents.WorkFlow oParticipants = new BOComponents.WorkFlow();
-
+		Session["key"]        =null;
+		Session["user_name"]  =null;
+		Session["uid"]        =null;
+		Session["rol"]        =null;
+		Session["sessionId"]  =null;
+		Session["employeeId"] = null;
 		try
 		{
 			int nUserID=0;
@@ -42,9 +47,9 @@
 				Session["user_name"]        = oParticipants.GetParticipantName((string)Session["sAppServer"], nUserID);
 				Session["uid"]              = nUserID;
 				Session["rol"]              = oParticipants.GetParticipantRol((string)Session["sAppServer"], nUserID);
-				Session["sessionId"] = "12";
-				Session["employeeId"] = "1200";
-				
+				Session["sessionId"] = Guid.NewGuid().ToString();
+				Session["employeeId"] = oParticipants.GetParticipantExpedient((string)Session["sAppServer"], nUserID);
+
 				if (Session["key"].ToString() != "" && Session["key"].ToString() == password.Text)
 				{
 					//Response.Redirect("/gestion/portal/index.aspx");

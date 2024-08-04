@@ -58,11 +58,6 @@ namespace Gestion.BusinessLogicLayer
 							" And sof_tipo_doc_area.id_area(+) = sof_regla.id_tipo_documento_area " +
 							" And sof_rem_ext_emp.id_empleado(+) = sof_regla.ID_REMITENTE_EXTERNO " +
 							" And sof_rem_ext_area.id_area(+) = sof_empleados.id_area ";
-			
-			//var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, null
-			//	, new System.Collections.Generic.List<Item> { new Item { text = "Regla", value = "usuarioNombre" } }
-			//	, sSql, enuActionTrack.Retrieve
-			//	);
             DataSet ds = OracleHelper.ExecuteDataset(ConfigurationManager.AppSettings["ConnectionString"],CommandType.Text, sSql);
 			#region LOG
 			var metadata = ControlLog.GetInstance().GetMetadata(null, null, null
@@ -404,7 +399,6 @@ namespace Gestion.BusinessLogicLayer
 			oParam[23].Value = ELIMINADO;
 			oParam[24].Value = FECHA_INICIO;
 			oParam[25].Value = FECHA_FIN;
-            string j = oParam.SerializeOracleParameters();
             OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_regla_create",oParam);
             #region Log
@@ -441,7 +435,7 @@ namespace Gestion.BusinessLogicLayer
                 , null, enuActionTrack.Create
                 );
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Reglas / Editor de Reglas", enuAction.Create.GetDescription(), "sp_regla_create", string.Join(",", oParam.ToList()), ip, sessionId, expedient, metadata.result));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Reglas / Editor de Reglas", enuAction.Create.GetDescription(), "sp_regla_create", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
             #endregion
 
 
@@ -570,8 +564,7 @@ namespace Gestion.BusinessLogicLayer
             };
 			oParamMetadata[0].Value = REGLA_ID;
 			oParamMetadata[1].Direction = ParameterDirection.Output;
-			string j=oParam.SerializeOracleParameters();
-
+			
 			var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, oParamMetadata
 				, fieldMetadata
 				, "SP_REGLA_UPDATE_LOG", enuActionTrack.Update
@@ -595,7 +588,6 @@ namespace Gestion.BusinessLogicLayer
 			
 			oParam[0].Value = ruleId;
 			oParam[1].Value = endDate;
-            string j = oParam.SerializeOracleParameters();
             OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_regla_remove",oParam);
             var metadata = ControlLog.GetInstance().GetMetadata(null, oParam, null
@@ -603,7 +595,7 @@ namespace Gestion.BusinessLogicLayer
 				, null, enuActionTrack.Delete, null
 				);
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Reglas / Editor de Reglas", enuAction.Delete.GetDescription(), "sp_regla_remove", string.Join(",", oParam.ToList()), ip, sessionId, expedient, metadata.result));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Reglas / Editor de Reglas", enuAction.Delete.GetDescription(), "sp_regla_remove", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
         }
 
 

@@ -43,7 +43,7 @@ namespace Gestion.gestion.seguridad
             List<Item> result = new List<Item>();
             if (!_offLine)
             {
-                string sql = "SELECT CAST(ID_EMPLEADO AS varchar(20)) \"value\",NOMBRE \"text\", '' label FROM CGESTION.SOF_EMPLEADOS ORDER BY NOMBRE";
+                string sql = "SELECT CAST(ID_EMPLEADO AS varchar(20)) \"value\",NOMBRE \"text\", '' label FROM CGESTION.SOF_EMPLEADOS ORDER BY NOMBRE FETCH FIRST 5 ROWS ONLY";
                 OracleDataReader dr = OracleHelper.ExecuteReader(ConfigurationManager.AppSettings["ConnectionString"], CommandType.Text, sql);
                 ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
                         , new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Bitacora", enuAction.Retrieve.GetDescription(), "SOF_EMPLEADOS", sql, Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString()));
