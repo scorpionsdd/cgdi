@@ -132,6 +132,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row col-md-12">
+                                    <div class="mb-3 row">
+                                        <label for="cboExporta" class="col-sm-2 col-form-label">Tipo Bitácora</label>
+                                        <div class="col-sm-10">
+                                            <asp:DropDownList ID="cboExporta" CssClass="form-control" runat="server">
+                                                <asp:ListItem Value="0" Text="Todo"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="Bitácora de la Gestión de Usuarios"></asp:ListItem>
+                                                <asp:ListItem Value="2" Text="Bitácora de la Gestión de Perfiles"></asp:ListItem>
+                                                <asp:ListItem Value="3" Text="Bitácora de Acceso Exitoso"></asp:ListItem>
+                                                <asp:ListItem Value="4" Text="Bitácora de Intento de Acceso No Exitoso"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row col-md-12" style="text-align: center; display: block; margin: 10px;">
                                     <asp:ImageButton ID="bntLimpiar" ImageUrl="../images/workflow/deleted.gif" CssClass="btn btn-danger" runat="server" Text="Limpiar" OnClick="bntLimpiar_Click" />
                                     <asp:ImageButton ID="btnBuscar" ImageUrl="../images/detail.gif" CssClass="btn btn-primary" runat="server" Text="Buscar" OnClick="btnBuscar_Click" />
@@ -161,9 +175,11 @@
                                                 <AlternatingRowStyle CssClass="evenRow"    />
                                                 <RowStyle CssClass="oddRow" />
                                                 <Columns>
-                                                    <asp:BoundField DataField="LOGID" HeaderText="Clave" SortExpression="LOGID"></asp:BoundField>
+                                                    <asp:BoundField DataField="LOGID" HeaderText="Clave" SortExpression="LOGID" Visible="false"></asp:BoundField>
                                                     <asp:BoundField DataField="USER" HeaderText="Usuario" SortExpression="USERID"></asp:BoundField>
                                                     <asp:BoundField DataField="DATETIMEEVENT" HeaderText="Fecha Evento" SortExpression="DATETIMEEVENT"></asp:BoundField>
+                                                    <asp:BoundField DataField="SESSIONID" HeaderText="Sesion" SortExpression="SESSIONID"></asp:BoundField>
+                                                    <asp:BoundField DataField="EXPEDIENT" HeaderText="Expediente" SortExpression="EXPEDIENT"></asp:BoundField>
                                                     <asp:BoundField DataField="MODULE" HeaderText="Pantalla" SortExpression="MODULE"></asp:BoundField>
                                                     <asp:BoundField DataField="ACTION" HeaderText="Accion" SortExpression="ACTION"></asp:BoundField>
                                                     <asp:BoundField DataField="ISDB" HeaderText="Es BD" SortExpression="ISDB"></asp:BoundField>

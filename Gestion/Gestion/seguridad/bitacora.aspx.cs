@@ -12,6 +12,9 @@ using BComponents.DataAccessLayer;
 using System.Data;
 using System.Data.OracleClient;
 using System.Configuration;
+using WebApplication5;
+using System.Runtime.Remoting.Contexts;
+using System.Drawing;
 
 namespace Gestion.gestion.seguridad
 {
@@ -20,7 +23,15 @@ namespace Gestion.gestion.seguridad
         public bool _offLine;
         public string _role;
         List<Log.Layer.Model.Model.Enumerator.enuAction> _action = Enum.GetValues(typeof(Log.Layer.Model.Model.Enumerator.enuAction)).Cast<Log.Layer.Model.Model.Enumerator.enuAction>().ToList();
-
+        List<LogSystemType> _logType = new List<LogSystemType>
+            {
+                new LogSystemType { Type = "0", Description = "Todo", Module = new List<string>(), Action = new List<string>() },
+                new LogSystemType { Type = "1", Description = "Bitácora de la Gestión de Usuarios", Module = new List<string> { "Pantalla Vista de Empleados" }, Action = new List<string>() },
+                new LogSystemType { Type = "2", Description = "Bitácora de la Gestión de Perfiles", Module = new List<string> { "Pantalla Vista de Recibidos", "Pantalla Vista de Enviados" }, Action = new List<string>() },
+                new LogSystemType { Type = "3", Description = "Bitácora de Acceso Exitoso", Module = new List<string> { "Pantalla Login" }, Action = new List<string> { "Acceso a Sistema" } },
+                new LogSystemType { Type = "4", Description = "Bitácora de Intento de Acceso No Exitoso", Module = new List<string> { "Pantalla Login" }, Action = new List<string> { "Acceso a Sistema Fallido", "No Existe Usuario" } }
+            };
+        #region EVENTOS
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -32,14 +43,108 @@ namespace Gestion.gestion.seguridad
                 Get();
             }
         }
-        private void Get() {
+        protected void bntLimpiar_Click(object sender, ImageClickEventArgs e)
+        {
+            cboUsuario.SelectedIndex = 0;
+            //cboPantalla.SelectedIndex = 0;
+            txtPantalla.Text = string.Empty;
+            cboAccion.SelectedIndex = 0;
+            //cboTabla.SelectedIndex = 0;
+            txtTabla.Text = string.Empty;
+            txtDesde.Text = string.Empty;
+            txtHasta.Text = string.Empty;
+        }
+        protected void btnBuscar_Click(object sender, ImageClickEventArgs e)
+        {
+            DataGet();
+        }
+        protected void btnExportar_Click(object sender, ImageClickEventArgs e)
+        {
+            if (gvResultado.Rows.Count == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "openModal(\"Validacion\",\"Realice una busqueda\");", true);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "run();", true);
+            }
+        }
+        protected void btnExportar2_Click(object sender, EventArgs e)
+        {
+            DataExport();
+        }
+        protected void gvResultado_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            Session["LogSystemItem"] = null;
+            if (e.CommandName == "Select")
+            {
+                string value = e.CommandArgument.ToString().Replace("\n", string.Empty).Replace("\"", "$$");
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "openModal(\"Sentencia Ejecutada\",\"" + value + "\");", true);
+            }
+            else if (e.CommandName == "Detail")
+            {
+                LogSystem logSystem = new LogSystem();
+                string value = e.CommandArgument.ToString();
+                var dt = ViewState["dt"] as DataTable;
+                var rows = dt.Select(" LOGID=" + value);
+                if (rows != null && rows.Count() > 0)
+                {
+                    foreach (var item in rows)
+                    {
+                        logSystem.LogId = Convert.ToInt32(item[0]);
+                        logSystem.Action = item[5].ToString();
+                        logSystem.DateTimeEvent = Convert.ToDateTime(item[3]);
+                        logSystem.Metadata = item[10].ToString();
+                    }
+                    Session["LogSystemItem"] = logSystem;
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "doOperation();", true);
+
+                }
+            }
+        }
+        protected void gvResultado_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+
+                string isBD = e.Row.Cells[7].Text;
+                bool isJson = !string.IsNullOrEmpty(((System.Data.DataRowView)e.Row.DataItem).Row.ItemArray[10].ToString());
+                ImageButton btnSelect = (ImageButton)e.Row.FindControl("btnSelect");
+                ImageButton btnDetail = (ImageButton)e.Row.FindControl("btnDetail");
+                btnSelect.Visible = isBD == "1";
+                btnDetail.Visible = isJson;
+
+            }
+        }
+        protected void gvResultado_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvResultado.PageIndex = e.NewPageIndex;
+            DataGet();
+        }
+        protected void gvResultado_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            var dt = ViewState["dt"] as DataTable;
+            if (dt != null)
+            {
+                DataView dv = new DataView(dt);
+                dv.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+                gvResultado.DataSource = dv;
+                gvResultado.DataBind();
+                HideColumn();
+            }
+        }
+        #endregion
+        #region CATLOGOS
+        private void Get()
+        {
             UserGet();
             ModuleGet();
             ActionGet();
             TableGet();
             btnExportar.Visible = false;
         }
-        private void UserGet() {
+        private void UserGet()
+        {
             List<Item> result = new List<Item>();
             if (!_offLine)
             {
@@ -70,7 +175,8 @@ namespace Gestion.gestion.seguridad
                 {
                     if (list.Any())
                     {
-                        list.ForEach(x => {
+                        list.ForEach(x =>
+                        {
                             Item item = new Item();
                             item.text = string.Format("Usuario {0}", x);
                             item.value = x.ToString();
@@ -138,14 +244,15 @@ namespace Gestion.gestion.seguridad
         }
         private void ActionGet()
         {
-            List<Item> result=new List<Item> ();
-            var list = _action.Select(x=>x.GetDescription()).ToList();
+            List<Item> result = new List<Item>();
+            var list = _action.Select(x => x.GetDescription()).ToList();
             int i = 0;
             if (list != null)
             {
                 if (list.Any())
                 {
-                    list.ForEach(x => {
+                    list.ForEach(x =>
+                    {
                         Item item = new Item();
                         i++;
                         item.text = x;
@@ -154,7 +261,7 @@ namespace Gestion.gestion.seguridad
                     });
                 }
             }
-            cboAccion.DataSource = result;            
+            cboAccion.DataSource = result;
             cboAccion.DataValueField = "value";
             cboAccion.DataTextField = "text";
             cboAccion.DataBind();
@@ -182,9 +289,11 @@ namespace Gestion.gestion.seguridad
             //cboTabla.DataBind();
             //cboTabla.Items.Insert(0, "--Todos--");
         }
+        #endregion
+        #region CONSULTA Y EXPORTACION
         private void DataGet()
         {
-            
+
             var list = Enumerable.Range(1, 10).ToList();
             if (list != null)
             {
@@ -201,31 +310,43 @@ namespace Gestion.gestion.seguridad
                     //    Sentence = string.Format("Sentencia {0}", x),
                     //}).ToList<object>();
                     var filter = GetDataFilter();
-                    if (filter == null) {
+                    if (filter == null)
+                    {
                         return;
                     }
-                    var result=ControlLog.GetInstance().Get(OracleHelper.ExecuteReader, filter);
-                    var dt = result.result;                    
+                    var result = ControlLog.GetInstance().Get(OracleHelper.ExecuteReader, filter);
+                    var dt = result.result;
                     ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
                         , new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Bitacora", enuAction.Retrieve.GetDescription(), "LOGSYSTEM", result.message, Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString()));
                     ViewState["dt"] = dt;
                     gvResultado.DataSource = dt;
                     gvResultado.DataBind();
-                    btnExportar.Visible = dt!=null && dt.Rows.Count>0;
+                    btnExportar.Visible = dt != null && dt.Rows.Count > 0;
                     HideColumn();
                 }
             }
         }
-        private LogSystemFilter GetDataFilter() {
-            LogSystemFilter result=new LogSystemFilter();
+        private LogSystemFilter GetDataFilter()
+        {
+            LogSystemFilter result = new LogSystemFilter();
             if (cboUsuario.SelectedIndex > 0) result.UserId = Convert.ToInt32(cboUsuario.SelectedValue);
-            if(!string.IsNullOrEmpty(txtPantalla.Text))result.Module = txtPantalla.Text;
-            if (cboAccion.SelectedIndex > 0) result.Action = cboAccion.SelectedItem.Text;
-            if (!string.IsNullOrEmpty(txtTabla.Text)) result.Table= txtTabla.Text;
+            if (cboExporta.SelectedValue == "0")
+            {
+                if (!string.IsNullOrEmpty(txtPantalla.Text)) result.Module = txtPantalla.Text;
+                if (cboAccion.SelectedIndex > 0) result.Action = cboAccion.SelectedItem.Text;
+            }
+            else
+            {
+                var filter = _logType.FirstOrDefault(x => x.Type == cboExporta.SelectedValue);
+                if (filter.Module != null && filter.Module.Any()) result.Modules = filter.Module;
+                if (filter.Action != null && filter.Action.Any()) result.Actions = filter.Action;
+            }
+
+            if (!string.IsNullOrEmpty(txtTabla.Text)) result.Table = txtTabla.Text;
             try
             {
                 if (!string.IsNullOrEmpty(txtDesde.Text)) result.DateTimeEventFrom = Convert.ToDateTime(txtDesde.Text);
-                if (!string.IsNullOrEmpty(txtHasta.Text)) result.DateTimeEventTo= Convert.ToDateTime(txtHasta.Text);
+                if (!string.IsNullOrEmpty(txtHasta.Text)) result.DateTimeEventTo = Convert.ToDateTime(txtHasta.Text);
                 if (result.DateTimeEventFrom.HasValue && result.DateTimeEventTo.HasValue)
                 {
                     if (result.DateTimeEventFrom.Value > result.DateTimeEventTo.Value)
@@ -240,12 +361,20 @@ namespace Gestion.gestion.seguridad
                 result = null;
                 ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "openModal(\"Validacion\",\"La Fecha Desde y Fecha Hasta deben de tener el formato dd/mm/aaaa\");", true);
             }
-            
+
             return result;
         }
-        private void DataExport() {
-            DataGrid dos = new DataGrid();
-            
+        private void DataExport()
+        {
+            DataGrid grid = new DataGrid();
+            System.IO.StringWriter sw = new System.IO.StringWriter();
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+            var dt = ViewState["dt"] as DataTable;
+            List<string> colEnglish = new List<string>() { "LOGID", "USERID", "USER", "DATETIMEEVENT", "MODULE", "ACTION", "ISDB", "TABLE", "SENTENCE", "IP", "METADATA", "SESSIONID", "EXPEDIENT" };
+            List<string> colSpanish = new List<string>() { "BITACORAID", "USUARIOID", "USUARIO", "FECHA EVENTO", "PANTALLA", "ACCION", "ESBD", "TABLA", "SENTENCIA", "IP", "METADATO", "SESION", "EXPEDIENTE" };
+            List<string> colRemove = new List<string>() { "BITACORAID", "USUARIOID", "ESBD", "TABLA", "SENTENCIA", "METADATO" };
+            List<string> colOrder = new List<string>() { "USUARIO", "FECHA EVENTO", "SESION", "EXPEDIENTE", "PANTALLA", "ACCION", "IP" };
+            var filter = _logType.FirstOrDefault(x => x.Type == cboExporta.SelectedValue);
             HttpContext.Current.Response.ClearContent();
             HttpContext.Current.Response.AddHeader("content-disposition", string.Format("attachment; filename={0}.xls", Guid.NewGuid()));
             HttpContext.Current.Response.ContentType = "application/ms-excel";
@@ -253,114 +382,43 @@ namespace Gestion.gestion.seguridad
             HttpContext.Current.Response.Charset = "utf-8";
             HttpContext.Current.Response.Charset = "";
 
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            HtmlTextWriter htw = new HtmlTextWriter(sw);
-            var dt = ViewState["dt"] as DataTable;
-            var list = Enumerable.Range(1, 10).ToList();
-            if (dt != null && dt.Rows.Count>0)
+            HttpContext.Current.Response.Write("<font style='font: 8pt Arial;'>");
+            HttpContext.Current.Response.Write("<BR />");
+            HttpContext.Current.Response.Write("<img src='http://bnodcgd-b/gestion/images/BanobrasExcel.png'/>");  //las imagenes deben estar al tamaño deseado, no respeta el style.            
+            HttpContext.Current.Response.Write("<table>");
+            HttpContext.Current.Response.Write("<tr style='text-align:center'>");
+            HttpContext.Current.Response.Write("<td colspan='2'>&nbsp;</td>");
+            HttpContext.Current.Response.Write("<td colspan='5' style='font: bold 18pt Arial;'>" + filter.Description + "</td>");
+            HttpContext.Current.Response.Write("</tr>");
+            HttpContext.Current.Response.Write("</table>");
+
+            if (dt != null && dt.Rows.Count > 0)
             {
-                dos.DataSource = dt;
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    var index = colEnglish.IndexOf(dc.ColumnName);
+                    dc.ColumnName = colSpanish[index];
+                }
+                colRemove.ForEach(x =>
+                {
+                    dt.Columns.Remove(x);
+                });
+                grid.DataSource = dt.ChangeColumnOrder(colOrder.ToArray());
             }
-            dos.DataBind();
-            dos.RenderControl(htw);
+            grid.HeaderStyle.BackColor = Color.DarkRed;
+            grid.HeaderStyle.ForeColor = Color.White;
+            grid.DataBind();
+            grid.RenderControl(htw);
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Bitacora", enuAction.Download.GetDescription(), string.Empty, string.Empty, Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString()));
             HttpContext.Current.Response.Write(sw.ToString());
             this.Context.Response.End();
-        }        
-        public override void VerifyRenderingInServerForm(Control control)
-        {
-            // Requerido para evitar el error de verificación de controles ASP.NET
         }
-        protected void bntLimpiar_Click(object sender, ImageClickEventArgs e)
-        {
-            cboUsuario.SelectedIndex = 0;
-            //cboPantalla.SelectedIndex = 0;
-            txtPantalla.Text = string.Empty;
-            cboAccion.SelectedIndex = 0;
-            //cboTabla.SelectedIndex = 0;
-            txtTabla.Text = string.Empty;
-            txtDesde.Text = string.Empty;
-            txtHasta.Text = string.Empty;
-        }
-        protected void btnBuscar_Click(object sender, ImageClickEventArgs e)
-        {
-            DataGet();
-        }
-        protected void btnExportar_Click(object sender, ImageClickEventArgs e)
-        {
-            if (gvResultado.Rows.Count == 0)
-            {
-                ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "openModal(\"Validacion\",\"Realice una busqueda\");", true);
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "run();", true);
-            }
-        }
-        protected void btnExportar2_Click(object sender, EventArgs e)
-        {
-            DataExport();
-        }
-        protected void gvResultado_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            Session["LogSystemItem"] = null;
-            if (e.CommandName == "Select")
-            {
-                string value = e.CommandArgument.ToString().Replace("\n",string.Empty).Replace("\"", "$$");
-                ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "openModal(\"Sentencia Ejecutada\",\"" + value+ "\");", true);
-            }
-            else if (e.CommandName=="Detail")
-            {
-                LogSystem logSystem = new LogSystem(); 
-                string value = e.CommandArgument.ToString();
-                var dt = ViewState["dt"] as DataTable;
-                var rows=dt.Select(" LOGID=" + value);
-                if (rows!=null && rows.Count()>0)
-                {
-                    foreach (var item in rows)
-                    {
-                        logSystem.LogId = Convert.ToInt32(item[0]);
-                        logSystem.Action= item[5].ToString();
-                        logSystem.DateTimeEvent= Convert.ToDateTime(item[3]);
-                        logSystem.Metadata= item[10].ToString();
-                    }
-                    Session["LogSystemItem"] = logSystem;
-                    ScriptManager.RegisterStartupScript(this, typeof(Page), "Pop", "doOperation();", true);
-                    
-                }
-            }
-        }
-        protected void gvResultado_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                
-                string isBD = e.Row.Cells[5].Text;
-                bool isJson = !string.IsNullOrEmpty(((System.Data.DataRowView)e.Row.DataItem).Row.ItemArray[10].ToString());
-                ImageButton btnSelect = (ImageButton)e.Row.FindControl("btnSelect");
-                ImageButton btnDetail = (ImageButton)e.Row.FindControl("btnDetail");
-                btnSelect.Visible = isBD == "1";
-                btnDetail.Visible = isJson;
-               
-            }
-        }
-        protected void gvResultado_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvResultado.PageIndex = e.NewPageIndex;
-            DataGet();
-        }
-        protected void gvResultado_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            var dt = ViewState["dt"] as DataTable;
-            if (dt != null)
-            {
-                DataView dv = new DataView(dt);
-                dv.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-                gvResultado.DataSource = dv;
-                gvResultado.DataBind();
-                HideColumn();
-            }
-        }
+        #endregion
+        #region OTROS
+        //public override void VerifyRenderingInServerForm(Control control)
+        //{
+        //    // Requerido para evitar el error de verificación de controles ASP.NET
+        //}
         private string GetSortDirection(string column)
         {
             string sortDirection = "ASC";
@@ -380,17 +438,18 @@ namespace Gestion.gestion.seguridad
             ViewState["SortExpression"] = column;
             return sortDirection;
         }
-        private void HideColumn() {
+        private void HideColumn()
+        {
             bool isAdministrator = _role == "Administrator";
             if (!isAdministrator)
             {
-                List<int> column = new List<int> { 5, 6, 9 };
-                column.ForEach(x => {
+                List<int> column = new List<int> { 7, 8, 11 };
+                column.ForEach(x =>
+                {
                     gvResultado.Columns[x].Visible = false;
                 });
             }
-        }
-
-        
+        } 
+        #endregion
     }
 }

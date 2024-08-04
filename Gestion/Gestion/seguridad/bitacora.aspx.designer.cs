@@ -96,6 +96,15 @@ namespace Gestion.gestion.seguridad
         protected global::System.Web.UI.WebControls.TextBox txtHasta;
 
         /// <summary>
+        /// Control cboExporta.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cboExporta;
+
+        /// <summary>
         /// Control bntLimpiar.
         /// </summary>
         /// <remarks>
