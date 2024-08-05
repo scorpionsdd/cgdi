@@ -9,6 +9,7 @@ using Log.Layer.Model.Extension;
 using Log.Layer.Business;
 using Log.Layer.Model.Model;
 using System.Linq;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace Gestion.BusinessLogicLayer
@@ -629,15 +630,60 @@ namespace Gestion.BusinessLogicLayer
 			oParam[12].Value = expediente;
 			oParam[13].Value = puestoId;
 
+			#region Log
+			OracleParameter[] oParamMetadata = {
+											new OracleParameter("pEmpleadoId", OracleType.Number),
+											new OracleParameter("outCursor", OracleType.Cursor)};
+			List<Item> fieldMetadata = new List<Item>() {
+			{ new Item { label="No. Expediente ", text ="CLAVE_EMPLEADO", value = "pExpediente" } },
+			{ new Item { label="Nombre Apellido ", text ="NOMBRE", value = "pNombreApellido" } },
+			{ new Item { label="Apellido Nombre ", text ="APELLIDONOMBRE", value = "pApellidoNombre" } },
+			{ new Item { label="Categoría", text ="CATEGORIA", value = "pCategoria" } }//,
+			//{ new Item { label="Usuario", text ="ID_EMPLEADO", value = "pID_EMPLEADO",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
+
+			//{ new Item { label="Tipo Usuario", text ="TIPO_USUARIO", value = "pTIPO_USUARIO" } },
+			//{ new Item { label=" Usa Catálogo Remitente Externo", text ="REMITENTE_EXT_CATALOGO", value = "pREMITENTE_EXT_CATALOGO" } },
+			//{ new Item { label="Usa Catálogo Tipo Documento?", text ="TIPO_DOCUMENTO_CATALOGO", value = "pTIPO_DOCUMENTO_CATALOGO" } },
+			//{ new Item { label="Remitente Incluye Operativos? ", text ="REM_INCLUYE_OPER", value = "pREM_INCLUYE_OPER" } },
+			//{ new Item { label=" Al Turnar Despliega Operativos?", text ="TUR_ARBOL", value = "pTUR_ARBOL" } },
+			//{ new Item { label="Confirna Concluir, el Volante? ", text ="CONFIRMA_CONCLUIR", value = "pCONFIRMA_CONCLUIR" } },
+			//{ new Item { label="Se concluye un volante al acusar de recibo un turno con copia", text ="CONCLUIR_ACUSE_CCPARA", value = "pCONCLUIR_ACUSE_CCPARA" } },
+			//{ new Item { label="La Respuesta es en Cascada? ", text ="RESPONDER_CASCADA", value = "pRESPONDER_CASCADA" } },
+			//{ new Item { label="Usuario", text ="ID_EMPLEADO", value = "pID_EMPLEADO",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
+			//{ new Item { label="Remitente Area", text ="ID_REMITENTE_AREA", value = "pID_REMITENTE_AREA" , sentence = "select area \"text\" From sof_Areas WHERE id_area={0}"} },
+			//{ new Item { label="Remitente", text ="ID_REMITENTE_TITULAR", value = "pID_REMITENTE_TITULAR" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} },
+			//{ new Item { label="Destinatario Area", text ="ID_DESTINATARIO_AREA", value = "pID_DESTINATARIO_AREA", sentence = "select area \"text\" From sof_Areas WHERE id_area={0}" } },
+			//{ new Item { label="Destinatario", text ="ID_DESTINATARIO_TITULAR", value = "pID_DESTINATARIO_TITULAR",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
+			//{ new Item { label="Firma", text ="ID_FIRMA", value = "pID_FIRMA",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
+			//{ new Item { label="Folio", text ="ID_FOLIO", value = "pID_FOLIO" , sentence = "select area \"text\" From sof_Areas WHERE id_area={0}"} },
+			//{ new Item { label="Tipo Documento Empleado", text ="ID_TIPO_DOCUMENTO_EMPLEADO", value = "pID_TIPO_DOCUMENTO_EMPLEADO" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} },
+			//{ new Item { label="Tipo Documento Empleado Area", text ="ID_TIPO_DOCUMENTO_AREA", value = "pID_TIPO_DOCUMENTO_AREA", sentence = "select area \"text\" From sof_Areas WHERE id_area={0}" } },
+			//{ new Item { label="Remitente Externo", text ="ID_REMITENTE_EXTERNO", value = "pID_REMITENTE_EXTERNO" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} },
+			//{ new Item { label="Remitente Externo Area", text ="DOCUMENTO_TIPO", value = "pDOCUMENTO_TIPO" } },
+			//{ new Item { label="Eliminado", text ="ELIMINADO", value = "pELIMINADO" } },
+			//{ new Item { label="Fecha de Vigencia", text ="FECHA_INICIO", value = "pFECHA_INICIO" } }
+
+			};
+			oParamMetadata[0].Value = empleadoId;
+			oParamMetadata[1].Direction = ParameterDirection.Output;
+			string j = oParam.SerializeOracleParameters();
+
+			var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, oParamMetadata
+				, fieldMetadata
+				, "SP_EMPLEADOS_UPDATE_LOG", enuActionTrack.Update
+				);
+			#endregion
 
 			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_empleados_update",oParam);
 
-            ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Update.GetDescription(), "sp_empleados_update", string.Join(",", oParam.ToList()), ip, sessionId, expedient));
-        }
+			#region Log
+			ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Update.GetDescription(), "sp_empleados_update", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
+			#endregion
+		}
 
-		public static void Remove(int empleadoId, string eliminado, string endDate, string uid, string ip, string sessionId, string expedient)
+        public static void Remove(int empleadoId, string eliminado, string endDate, string uid, string ip, string sessionId, string expedient)
 		{
 
 			OracleParameter [] oParam = {new OracleParameter("pEmpleadoId", null),

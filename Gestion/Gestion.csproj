@@ -48,13 +48,15 @@
   <ItemGroup>
     <Reference Include="BCCXMLDOMParser, Version=1.0.6410.19425, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\BCCXMLDOMParser.dll</HintPath>
+      <HintPath>..\..\Library\BCCXMLDOMParser.dll</HintPath>
     </Reference>
-    <Reference Include="Log.Layer.Business">
-      <HintPath>..\..\..\..\..\..\..\TFS\Log\03-Business\Log.Layer.Business\bin\Debug\Log.Layer.Business.dll</HintPath>
+    <Reference Include="Log.Layer.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Library\Log.Layer.Business.dll</HintPath>
     </Reference>
-    <Reference Include="Log.Layer.Model">
-      <HintPath>..\..\..\..\..\..\..\TFS\Log\03-Business\Log.Layer.Business\bin\Debug\Log.Layer.Model.dll</HintPath>
+    <Reference Include="Log.Layer.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Library\Log.Layer.Model.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -89,9 +91,8 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TypedRegistry, Version=1.0.0.3, Culture=neutral, PublicKeyToken=d7dc4571284f76c3">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\TypedRegistry.dll</HintPath>
+    <Reference Include="TypedRegistry">
+      <HintPath>..\..\Library\TypedRegistry.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
