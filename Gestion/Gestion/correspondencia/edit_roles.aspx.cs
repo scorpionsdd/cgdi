@@ -11,6 +11,11 @@ using System.Web.UI.HtmlControls;
 using System.Text;
 
 using Gestion.BusinessLogicLayer;
+using BComponents.DataAccessLayer;
+using Log.Layer.Business;
+using Log.Layer.Model.Model.Enumerator;
+using Log.Layer.Model.Model;
+using Log.Layer.Model.Extension;
 
 namespace Gestion.Correspondencia
 {
@@ -40,7 +45,8 @@ namespace Gestion.Correspondencia
 			Initialize();
 			if (!IsPostBack) 
 			{
-				SetDefaultValues();
+                ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Lista de Roles / Edicion de Roles", enuAction.Navegation.GetDescription(), string.Empty, string.Empty, Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString()));
+                SetDefaultValues();
 			} 
 			else 
 			{
@@ -85,7 +91,7 @@ namespace Gestion.Correspondencia
 
 		private void LoadData()
 		{
-			DataSet ds = Roles.GetRolesByID(int.Parse(Request.QueryString["id"].ToString()));
+			DataSet ds = Roles.GetRolesByID(int.Parse(Request.QueryString["id"].ToString()), Convert.ToString(Session["uid"]), Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString());
 			if (ds.Tables[0].Rows.Count > 0 ) {
 				txtRol.Value	= ds.Tables[0].Rows[0]["rol"].ToString();
 				txtEmpleado.Value	= ds.Tables[0].Rows[0]["nombre"].ToString();
@@ -96,16 +102,16 @@ namespace Gestion.Correspondencia
 		{
 
 			if (int.Parse(Request.QueryString["id"].ToString()) == 0 ) {
-				Roles.Create(cboEmployee.Value, txtRol.Value);
+				Roles.Create(cboEmployee.Value, txtRol.Value, Convert.ToString(Session["uid"]), Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString());
 			} else {
-				Roles.Update(int.Parse(Request.QueryString["id"].ToString()), cboEmployee.Value, txtRol.Value);
+				Roles.Update(int.Parse(Request.QueryString["id"].ToString()), cboEmployee.Value, txtRol.Value, Convert.ToString(Session["uid"]), Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString());
 			}
 
 		}
 
 		private void RemoveData()
 		{
-			Roles.Remove(int.Parse(Request.QueryString["id"].ToString()));
+			Roles.Remove(int.Parse(Request.QueryString["id"].ToString()), Convert.ToString(Session["uid"]), Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString());
 		}
 
 

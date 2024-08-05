@@ -4,6 +4,12 @@ using System.Data.OracleClient;
 using System.Configuration;
 using System.Text;
 using BComponents.DataAccessLayer;
+using Log.Layer.Business;
+using Log.Layer.Model.Model.Enumerator;
+using Log.Layer.Model.Model;
+using System.Collections.Generic;
+using Log.Layer.Model.Extension;
+using System.Linq;
 
 namespace Gestion.BusinessLogicLayer
 {
@@ -29,7 +35,7 @@ namespace Gestion.BusinessLogicLayer
 			return ds;
 		}
 
-		public static DataSet GetRolesByID(int rolId )
+		public static DataSet GetRolesByID(int rolId, string uid, string ip, string sessionId, string expedient)
 		{
 			string sSql =	"Select rol.rol_id, emp.nombre, rol.rol, emp.id_empleado From sof_rol rol, sof_empleados emp " +
 				" Where rol.empleado_id = emp.id_empleado " +
@@ -38,11 +44,19 @@ namespace Gestion.BusinessLogicLayer
 				" order by emp.nombre";
 
 			DataSet ds = OracleHelper.ExecuteDataset(ConfigurationManager.AppSettings["ConnectionString"], CommandType.Text, sSql);
-			return ds;
+            #region LOG
+            var metadata = ControlLog.GetInstance().GetMetadata(null, null, null
+                    , new List<Item> { new Item { text = "Rol", value = "rol_id" } }
+                    , null, enuActionTrack.Retrieve, ds
+                    );
+            ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
+            , new LogSystem(Convert.ToInt32(uid), "Pantalla Lista de Roles / Edicion de Roles", enuAction.Retrieve.GetDescription(), "sof_rol , sof_empleados", sSql, ip, sessionId, expedient, metadata.result));
+            #endregion
+            return ds;
 		}
 
 
-		public static int Create(string empleadoId, string rol)
+		public static int Create(string empleadoId, string rol, string uid, string ip, string sessionId, string expedient)
 		{
 
 			OracleParameter [] oParam = {	
@@ -54,16 +68,26 @@ namespace Gestion.BusinessLogicLayer
 			oParam[0].Value = empleadoId;
 			oParam[1].Value = rol;
 			oParam[2].Direction = ParameterDirection.InputOutput;
-			oParam[2].Value = 0;
-
-			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
+			oParam[2].Value = 0;            
+            OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_roles_create",oParam);
-
-			object obj = oParam[2].Value;
+            #region Log
+            List<Item> fieldMetadata = new List<Item> {
+                { new Item { label="Empleado", text ="EMPLEADO_ID", value = "pEmpleadoId",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO={0}" } },
+                { new Item { label="Rol", text ="ROL", value = "pRol" } },
+            };
+            var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, null
+                , fieldMetadata
+                , null, enuActionTrack.Create
+                );
+            ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
+            , new LogSystem(Convert.ToInt32(uid), "Pantalla Lista de Roles / Edicion de Roles", enuAction.Create.GetDescription(), "sp_roles_create", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
+            #endregion
+            object obj = oParam[2].Value;
 			return int.Parse(obj.ToString());
 		}
 
-		public static void Update(int rolId, string empleadoId, string rol)
+		public static void Update(int rolId, string empleadoId, string rol, string uid, string ip, string sessionId, string expedient)
 		{
 
 			OracleParameter [] oParam = {	
@@ -75,13 +99,32 @@ namespace Gestion.BusinessLogicLayer
 			oParam[0].Value = rolId;
 			oParam[1].Value = empleadoId;
 			oParam[2].Value = rol;
+            #region Log
+            OracleParameter[] oParamMetadata = {
+                                            new OracleParameter("pRolId", OracleType.Number),
+                                            new OracleParameter("outCursor", OracleType.Cursor)};
+            List<Item> fieldMetadata = new List<Item> {
+            { new Item { label="Rol", text ="ROL", value = "pRol" } },
+            { new Item { label="Empleado", text ="EMPLEADO_ID", value = "pEmpleadoId",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO={0}" } },
+            };
+            oParamMetadata[0].Value = rolId;
+            oParamMetadata[1].Direction = ParameterDirection.Output;
 
-			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
+            var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, oParamMetadata
+                , fieldMetadata
+                , "SP_ROLES_UPDATE_LOG", enuActionTrack.Update
+                );
+            #endregion
+            OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_roles_update",oParam);
+            #region Log
+            ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
+                , new LogSystem(Convert.ToInt32(uid), "Pantalla Lista de Roles / Edicion de Roles", enuAction.Update.GetDescription(), "sp_roles_update", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
+            #endregion
 
-		}
+        }
 
-		public static void Remove(int rolId)
+        public static void Remove(int rolId, string uid, string ip, string sessionId, string expedient)
 		{
 
 			OracleParameter [] oParam = {new OracleParameter("pRolId", null)
@@ -91,8 +134,14 @@ namespace Gestion.BusinessLogicLayer
 
 			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_roles_remove",oParam);
+            var metadata = ControlLog.GetInstance().GetMetadata(null, oParam, null
+               , new List<Item> { new Item { text = "Rol", value = "pRolId" }}
+               , null, enuActionTrack.Delete, null
+               );
+            ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
+            , new LogSystem(Convert.ToInt32(uid), "Pantalla Lista de Roles / Edicion de Roles", enuAction.Delete.GetDescription(), "sp_roles_remove", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
 
-		}
+        }
 
 	}
 }
