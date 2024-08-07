@@ -50,8 +50,16 @@ namespace Gestion.BusinessLogicLayer
 				"Order by usr.apellidonombre";
 
 			DataSet ds = OracleHelper.ExecuteDataset(ConfigurationManager.AppSettings["ConnectionString"], CommandType.Text, sSql);
+            var metadata = ControlLog.GetInstance().GetMetadata(null, null
+			, new List<Item> { 
+				new Item { text = "Mapeo Enviado", value = "rowid" } ,
+                { new Item { text="Usuario", value="rowid",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO in (select ID_EMPLEADO from sof_mapeo_regla where rowid={0})" } },
+                { new Item { text="Destinatario", value="rowid",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO in (select ID_EMPLEADO_BIS from sof_mapeo_regla where rowid={0})"} },
+            }
+			, null, enuActionTrack.Retrieve, ds
+			);
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Retrieve.GetDescription(), "sof_mapeo_regla mr, sof_empleados usr, sof_empleados addr", sSql, ip, sessionId, expedient));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Retrieve.GetDescription(), "sof_mapeo_regla mr, sof_empleados usr, sof_empleados addr", sSql, ip, sessionId, expedient, metadata.result));
 
             return ds;
 		}
@@ -72,8 +80,16 @@ namespace Gestion.BusinessLogicLayer
 
 			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_mapeo_regla_create",oParam);
+            List<Item> fieldMetadata = new List<Item> {
+                { new Item { label="Usuario", text ="ID_EMPLEADO", value = "pEmpleadoId",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO={0}" } },
+                { new Item { label="Destinatario", text ="ID_EMPLEADO_BIS", value = "pEmpleadoBisId" ,sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO={0}"} },
+            };
+            var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, null
+                , fieldMetadata
+                , null, enuActionTrack.Create
+                );
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Create.GetDescription(), "sp_mapeo_regla_create", string.Join(",", oParam.ToList()), ip, sessionId, expedient));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Create.GetDescription(), "sp_mapeo_regla_create", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient,metadata.result));
             object obj = oParam[2].Value;
 			return int.Parse(obj.ToString());
 		}
@@ -95,31 +111,38 @@ namespace Gestion.BusinessLogicLayer
                                             new OracleParameter("pRowId", OracleType.VarChar),
                                             new OracleParameter("outCursor", OracleType.Cursor)};
             List<Item> fieldMetadata = new List<Item> {
-            { new Item { label="id del empleado", text ="id_empleado", value = "pEmpleadoId" } },
-            { new Item { label="Destinatario", text ="id_destinatario", value = "pEmpleadoBisId" } },
+                { new Item { label="Usuario", text ="ID_EMPLEADO", value = "pEmpleadoId",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO={0}" } },
+                { new Item { label="Destinatario", text ="ID_EMPLEADO_BIS", value = "pEmpleadoBisId" ,sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO={0}"} },
             };
             oParamMetadata[0].Value = rowId;
             oParamMetadata[1].Direction = ParameterDirection.Output;
             var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, oParamMetadata
                 , fieldMetadata
-                , "SP_MAPEO_RECIBIDOS_UPDATE_LOG", enuActionTrack.Update
+                , "sp_mapeo_regla_update_LOG", enuActionTrack.Update
                 );
             #endregion
             OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 				CommandType.StoredProcedure, "sp_mapeo_regla_update",oParam);
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Update.GetDescription(), "sp_mapeo_regla_update", string.Join(",", oParam.ToList()), ip, sessionId, expedient, metadata.result));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Update.GetDescription(), "sp_mapeo_regla_update", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
         }
 
 		public static void Remove(string rowId, string uid, string ip, string sessionId, string expedient)
 		{
 			OracleParameter [] oParam = {new OracleParameter("pRowId", OracleType.VarChar)};
 			oParam[0].Value = rowId;
-			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
-				CommandType.StoredProcedure, "sp_mapeo_regla_remove",oParam);
-
+            var metadata = ControlLog.GetInstance().GetMetadata(oParam, null
+			   , new List<Item> { 
+				   new Item { text = "Mapeo Enviado", value = "pRowId" } ,
+                    { new Item { text="Usuario", value="pRowId",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO in (select ID_EMPLEADO from sof_mapeo_regla where rowid={0})" } },
+                    { new Item { text="Destinatario", value="pRowId",sentence="select sof_empleados.apellidonombre||'-'||sof_areas.area apearea from cgestion.sof_empleados, cgestion.sof_areas Where sof_empleados.id_area = sof_areas.id_area(+) AND ID_EMPLEADO in (select ID_EMPLEADO_BIS from sof_mapeo_regla where rowid={0})"} },
+               }
+			   , null, enuActionTrack.Delete, null
+			   );
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Delete.GetDescription(), "sp_mapeo_regla_remove", string.Join(",", oParam.ToList()), ip, sessionId, expedient));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Enviados / Edición Correo Enviado", enuAction.Delete.GetDescription(), "sp_mapeo_regla_remove", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient,metadata.result));
+            OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
+    CommandType.StoredProcedure, "sp_mapeo_regla_remove", oParam);
         }
 
 

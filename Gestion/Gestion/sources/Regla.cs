@@ -60,8 +60,11 @@ namespace Gestion.BusinessLogicLayer
 							" And sof_rem_ext_area.id_area(+) = sof_empleados.id_area ";
             DataSet ds = OracleHelper.ExecuteDataset(ConfigurationManager.AppSettings["ConnectionString"],CommandType.Text, sSql);
 			#region LOG
-			var metadata = ControlLog.GetInstance().GetMetadata(null, null, null
-					, new List<Item> { new Item { text = "Regla", value = "REGLA_ID" } }
+			var metadata = ControlLog.GetInstance().GetMetadata(null, null
+					, new List<Item> { 
+                         new Item { text="Usuario", value ="ID_EMPLEADO",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } ,
+                         new Item { text="Remitente", value ="ID_REMITENTE_TITULAR" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} ,
+                    }
 					, null, enuActionTrack.Retrieve, ds
 					);
 			ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
@@ -588,14 +591,21 @@ namespace Gestion.BusinessLogicLayer
 			
 			oParam[0].Value = ruleId;
 			oParam[1].Value = endDate;
-            OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
-				CommandType.StoredProcedure, "sp_regla_remove",oParam);
-            var metadata = ControlLog.GetInstance().GetMetadata(null, oParam, null
-				, new List<Item> { new Item { text = "Regla", value = "pReglaId" }, new Item { text = "Fecha Fin", value = "pEndDate" } }
+
+            var metadata = ControlLog.GetInstance().GetMetadata(oParam, null
+				,	new List<Item> { new Item { text = "Regla", value = "pReglaId" }, 
+					new Item { text = "Fecha Fin", value = "pEndDate" },
+                    new Item { text="Usuario", value ="pReglaId",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO in (select ID_EMPLEADO from sof_regla where regla_id={0})" },
+                    new Item { text="Remitente", value ="pReglaId" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO  in (select ID_REMITENTE_TITULAR from sof_regla where regla_id={0})"} ,
+                }
 				, null, enuActionTrack.Delete, null
 				);
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
 			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Reglas / Editor de Reglas", enuAction.Delete.GetDescription(), "sp_regla_remove", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
+
+            OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
+			CommandType.StoredProcedure, "sp_regla_remove", oParam);
+
         }
 
 

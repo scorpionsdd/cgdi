@@ -25,7 +25,7 @@ namespace Gestion.gestion.seguridad
             LogSystem item = (LogSystem)Session["LogSystemItem"];
             litHTML.Text = string.Empty;
             litTitle.Text = item.Action;
-            litDate.Text = item.DateTimeEvent.ToString("yyyy/MM/ddTHH:mm:ss");
+            litDate.Text = item.DateTimeEvent.ToString("yyyy/MM/dd HH:mm:ss");
             var metadata= ControlLog.GetInstance().BuildMetadata(item);
             if (metadata.isOk)
             {

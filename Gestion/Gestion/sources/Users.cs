@@ -80,8 +80,30 @@ namespace Gestion.BusinessLogicLayer
 				"And sof_areas.id_area(+) = sof_empleados.id_area And sof_puesto.puesto_id(+) = sof_empleados.id_puesto";
 
 			DataSet ds = OracleHelper.ExecuteDataset(ConfigurationManager.AppSettings["ConnectionString"], CommandType.Text, sSql);
+			var fieldMetadata = new List<Item> {
+					new Item { text = "Empleado", value = "id_empleado" } ,
+				{ new Item { text="Nombre Apellido", value ="NOMBRE"} },
+				{ new Item { text ="Apellido Nombre", value ="APELLIDONOMBRE"} },
+				{ new Item { text ="Area", value ="ID_AREA",sentence="select area From sof_Areas Where id_area={0}"} },
+				{ new Item { text ="Clave Area", value ="CVE_AREA"} },
+				{ new Item { text ="Clave Puesto", value ="CLAVE_PUESTO"} },
+				{ new Item { text ="Categoría", value ="CATEGORIA"} },
+				{ new Item { text ="Tipo Empleado", value ="TIPO_USUARIO"} },
+				{ new Item { text ="Login", value ="LOGIN"} },
+				{ new Item { text ="Password", value ="PASSWORD"} },
+				{ new Item { text ="No. Expediente", value ="CLAVE_EMPLEADO"} },
+				{ new Item { text ="Puesto", value ="ID_PUESTO",sentence="select descripcion from sof_puesto where puesto_id={0}"} },
+				{ new Item { text ="Login", isOutput=true} },
+				{ new Item { text ="No. Expediente", isOutput=true} },
+				};
+            var metadata = ControlLog.GetInstance().GetMetadata(null, null
+				, fieldMetadata
+				, null, enuActionTrack.Retrieve, ds
+				);
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleado", enuAction.Retrieve.GetDescription(), "sof_empleados, sof_areas, sof_puesto", sSql, ip, sessionId, expedient));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleado", enuAction.Retrieve.GetDescription(), "sof_empleados, sof_areas, sof_puesto", sSql, ip, sessionId, expedient, metadata.result
+			,string.Format("Cuenta consultada {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "Login").value)
+			, string.Format("Expediente consultado {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "No. Expediente").value)));
 
             return ds;
 		}
@@ -574,7 +596,7 @@ namespace Gestion.BusinessLogicLayer
 			oParam[1].Value = apellidoNombre;
 			oParam[2].Value = areaId;
 			oParam[3].Value = claveArea;
-			oParam[4].Value = clavePuesto;
+			oParam[4].Value = clavePuesto;	
 			oParam[5].Value = categoria;
 			oParam[6].Value = tipoEmpleado;
 			oParam[7].Value = startDate;
@@ -588,8 +610,30 @@ namespace Gestion.BusinessLogicLayer
 
 			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
 						CommandType.StoredProcedure, "sp_empleados_create",oParam);
+            List<Item> fieldMetadata = new List<Item> {
+                { new Item { label="Nombre Apellido", text ="NOMBRE", value ="pNombreApellido"} },
+				{ new Item { label="Apellido Nombre", text ="APELLIDONOMBRE", value ="pApellidoNombre"} },
+				{ new Item { label="Area", text ="ID_AREA", value ="pAreaId",sentence="select area From sof_Areas Where id_area={0}"} },
+				{ new Item { label="Clave Area", text ="CLAVE_AREA", value ="pCveArea"} },
+				{ new Item { label="Clave Puesto", text ="CLAVE_PUESTO", value ="pCvePuesto"} },
+				{ new Item { label="Categoría", text ="CATEGORIA", value ="pCategoria"} },
+				{ new Item { label="Tipo Empleado", text ="TIPO_USUARIO", value ="pTipoEmpleado"} },
+				{ new Item { label="Login", text ="LOGIN", value ="pLogin"} },
+				{ new Item { label="Password", text ="PASSWORD", value ="pPassword"} },
+				{ new Item { label="No. Expediente", text ="CLAVE_EMPLEADO", value ="pExpediente"} },
+				{ new Item { label="Puesto", text ="ID_PUESTO", value ="pPuestoId",sentence="select descripcion from sof_puesto where puesto_id={0}"} },
+                { new Item { text ="LOGIN", isOutput=true} },
+                { new Item { text ="CLAVE_EMPLEADO", isOutput=true} },
+            };
+            var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, null
+                , fieldMetadata
+                , null, enuActionTrack.Create
+                );
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-            , new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Create.GetDescription(), "sp_empleados_create", string.Join(",", oParam.ToList()), ip, sessionId, expedient));
+            , new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Create.GetDescription(), "sp_empleados_create", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient,metadata.result
+            , string.Format("Cuenta creada {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "LOGIN").value)
+            , string.Format("Expediente creado {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "CLAVE_EMPLEADO").value)
+            ));
             object obj = oParam[13].Value;
 			return int.Parse(obj.ToString());
 		}
@@ -634,40 +678,24 @@ namespace Gestion.BusinessLogicLayer
 			OracleParameter[] oParamMetadata = {
 											new OracleParameter("pEmpleadoId", OracleType.Number),
 											new OracleParameter("outCursor", OracleType.Cursor)};
-			List<Item> fieldMetadata = new List<Item>() {
-			{ new Item { label="No. Expediente ", text ="CLAVE_EMPLEADO", value = "pExpediente" } },
-			{ new Item { label="Nombre Apellido ", text ="NOMBRE", value = "pNombreApellido" } },
-			{ new Item { label="Apellido Nombre ", text ="APELLIDONOMBRE", value = "pApellidoNombre" } },
-			{ new Item { label="Categoría", text ="CATEGORIA", value = "pCategoria" } }//,
-			//{ new Item { label="Usuario", text ="ID_EMPLEADO", value = "pID_EMPLEADO",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
-
-			//{ new Item { label="Tipo Usuario", text ="TIPO_USUARIO", value = "pTIPO_USUARIO" } },
-			//{ new Item { label=" Usa Catálogo Remitente Externo", text ="REMITENTE_EXT_CATALOGO", value = "pREMITENTE_EXT_CATALOGO" } },
-			//{ new Item { label="Usa Catálogo Tipo Documento?", text ="TIPO_DOCUMENTO_CATALOGO", value = "pTIPO_DOCUMENTO_CATALOGO" } },
-			//{ new Item { label="Remitente Incluye Operativos? ", text ="REM_INCLUYE_OPER", value = "pREM_INCLUYE_OPER" } },
-			//{ new Item { label=" Al Turnar Despliega Operativos?", text ="TUR_ARBOL", value = "pTUR_ARBOL" } },
-			//{ new Item { label="Confirna Concluir, el Volante? ", text ="CONFIRMA_CONCLUIR", value = "pCONFIRMA_CONCLUIR" } },
-			//{ new Item { label="Se concluye un volante al acusar de recibo un turno con copia", text ="CONCLUIR_ACUSE_CCPARA", value = "pCONCLUIR_ACUSE_CCPARA" } },
-			//{ new Item { label="La Respuesta es en Cascada? ", text ="RESPONDER_CASCADA", value = "pRESPONDER_CASCADA" } },
-			//{ new Item { label="Usuario", text ="ID_EMPLEADO", value = "pID_EMPLEADO",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
-			//{ new Item { label="Remitente Area", text ="ID_REMITENTE_AREA", value = "pID_REMITENTE_AREA" , sentence = "select area \"text\" From sof_Areas WHERE id_area={0}"} },
-			//{ new Item { label="Remitente", text ="ID_REMITENTE_TITULAR", value = "pID_REMITENTE_TITULAR" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} },
-			//{ new Item { label="Destinatario Area", text ="ID_DESTINATARIO_AREA", value = "pID_DESTINATARIO_AREA", sentence = "select area \"text\" From sof_Areas WHERE id_area={0}" } },
-			//{ new Item { label="Destinatario", text ="ID_DESTINATARIO_TITULAR", value = "pID_DESTINATARIO_TITULAR",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
-			//{ new Item { label="Firma", text ="ID_FIRMA", value = "pID_FIRMA",sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}" } },
-			//{ new Item { label="Folio", text ="ID_FOLIO", value = "pID_FOLIO" , sentence = "select area \"text\" From sof_Areas WHERE id_area={0}"} },
-			//{ new Item { label="Tipo Documento Empleado", text ="ID_TIPO_DOCUMENTO_EMPLEADO", value = "pID_TIPO_DOCUMENTO_EMPLEADO" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} },
-			//{ new Item { label="Tipo Documento Empleado Area", text ="ID_TIPO_DOCUMENTO_AREA", value = "pID_TIPO_DOCUMENTO_AREA", sentence = "select area \"text\" From sof_Areas WHERE id_area={0}" } },
-			//{ new Item { label="Remitente Externo", text ="ID_REMITENTE_EXTERNO", value = "pID_REMITENTE_EXTERNO" ,sentence="SELECT nombre \"text\" FROM sof_empleados WHERE ID_EMPLEADO ={0}"} },
-			//{ new Item { label="Remitente Externo Area", text ="DOCUMENTO_TIPO", value = "pDOCUMENTO_TIPO" } },
-			//{ new Item { label="Eliminado", text ="ELIMINADO", value = "pELIMINADO" } },
-			//{ new Item { label="Fecha de Vigencia", text ="FECHA_INICIO", value = "pFECHA_INICIO" } }
-
-			};
-			oParamMetadata[0].Value = empleadoId;
+            List<Item> fieldMetadata = new List<Item> {
+                { new Item { label="Nombre Apellido", text ="NOMBRE", value ="pNombreApellido"} },
+                { new Item { label="Apellido Nombre", text ="APELLIDONOMBRE", value ="pApellidoNombre"} },
+                { new Item { label="Area", text ="ID_AREA", value ="pAreaId",sentence="select area From sof_Areas Where id_area={0}"} },
+                { new Item { label="Clave Area", text ="CLAVE_AREA", value ="pCveArea"} },
+                { new Item { label="Clave Puesto", text ="CLAVE_PUESTO", value ="pCvePuesto"} },
+                { new Item { label="Categoría", text ="CATEGORIA", value ="pCategoria"} },
+                { new Item { label="Tipo Empleado", text ="TIPO_USUARIO", value ="pTipoEmpleado"} },
+                { new Item { label="Login", text ="LOGIN", value ="pLogin"} },
+                { new Item { label="Password", text ="PASSWORD", value ="pPassword"} },
+                { new Item { label="No. Expediente", text ="CLAVE_EMPLEADO", value ="pExpediente"} },
+                { new Item { label="Puesto", text ="ID_PUESTO", value ="pPuestoId",sentence="select descripcion from sof_puesto where puesto_id={0}"} },
+                { new Item { text ="LOGIN", isOutput=true} },
+                { new Item { text ="CLAVE_EMPLEADO", isOutput=true} },
+            };
+            oParamMetadata[0].Value = empleadoId;
 			oParamMetadata[1].Direction = ParameterDirection.Output;
-			string j = oParam.SerializeOracleParameters();
-
+			
 			var metadata = ControlLog.GetInstance().GetMetadata(OracleHelper.ExecuteReader, oParam, oParamMetadata
 				, fieldMetadata
 				, "SP_EMPLEADOS_UPDATE_LOG", enuActionTrack.Update
@@ -679,7 +707,10 @@ namespace Gestion.BusinessLogicLayer
 
 			#region Log
 			ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Update.GetDescription(), "sp_empleados_update", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Update.GetDescription(), "sp_empleados_update", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient, metadata.result
+            , string.Format("Cuenta actualizada {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "LOGIN").value)
+            , string.Format("Expediente actualizado {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "CLAVE_EMPLEADO").value)
+            ));
 			#endregion
 		}
 
@@ -694,11 +725,33 @@ namespace Gestion.BusinessLogicLayer
 			oParam[0].Value = empleadoId;
 			oParam[1].Value = eliminado;
 			oParam[2].Value = endDate;
-
-			OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
-				CommandType.StoredProcedure, "sp_empleados_remove",oParam);
+			var fieldMetadata = new List<Item> {
+				   new Item { text = "Empleado", value = "pEmpleadoId" } ,
+				{ new Item { text="Nombre Apellido", value ="pEmpleadoId",sentence="select NOMBRE from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Apellido Nombre", value ="pEmpleadoId",sentence="select APELLIDONOMBRE from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Area", value ="pEmpleadoId",sentence="select area From sof_Areas Where id_area in (select ID_AREA from sof_empleados where id_empleado={0})"} },
+				{ new Item { text ="Clave Area", value ="pEmpleadoId", sentence = "select CVE_AREA from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Clave Puesto", value ="pEmpleadoId", sentence = "select CLAVE_PUESTO from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Categoría", value ="pEmpleadoId", sentence = "select CATEGORIA from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Tipo Empleado", value ="pEmpleadoId", sentence = "select TIPO_USUARIO from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Login", value ="pEmpleadoId", sentence = "select LOGIN from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Password", value ="pEmpleadoId", sentence = "select PASSWORD from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="No. Expediente", value ="pEmpleadoId", sentence = "select CLAVE_EMPLEADO from sof_empleados where id_empleado={0}"} },
+				{ new Item { text ="Puesto", value ="pEmpleadoId",sentence="select descripcion from sof_puesto where puesto_id  in (select ID_PUESTO from sof_empleados where id_empleado={0})"} },
+				{ new Item { text ="Login", isOutput=true} },
+				{ new Item { text ="No. Expediente", isOutput=true} },
+			   };
+            var metadata = ControlLog.GetInstance().GetMetadata(oParam, null
+			   , fieldMetadata
+			   , null, enuActionTrack.Delete, null
+			   );
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery
-			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Delete.GetDescription(), "sp_empleados_remove", string.Join(",", oParam.ToList()), ip, sessionId, expedient));
+			, new LogSystem(Convert.ToInt32(uid), "Pantalla Vista de Empleados / Edicion Empleados", enuAction.Delete.GetDescription(), "sp_empleados_remove", string.Join(",", oParam.Select(x => string.Format("{0}={1}", x.ParameterName, x.Value)).ToList()), ip, sessionId, expedient,metadata.result
+            , string.Format("Cuenta eliminada {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "Login").value)
+            , string.Format("Expediente eliminado {0}", fieldMetadata.FirstOrDefault(x => x.isOutput.HasValue && x.isOutput.Value && x.text == "No. Expediente").value)
+            ));
+            OracleHelper.ExecuteNonQuery(ConfigurationManager.AppSettings["ConnectionString"],
+    CommandType.StoredProcedure, "sp_empleados_remove", oParam);
         }
 
 

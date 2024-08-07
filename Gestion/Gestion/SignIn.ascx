@@ -53,7 +53,7 @@
 				if (Session["key"].ToString() != "" && Session["key"].ToString() == password.Text)
 				{
 					//Response.Redirect("/gestion/portal/index.aspx");
-					ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Login", enuAction.Access.GetDescription(), string.Empty, string.Empty,Request.UserHostAddress,Session["sessionId"].ToString(),Session["employeeId"].ToString()));
+					ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Login", enuAction.Access.GetDescription(), string.Empty, string.Empty,Request.UserHostAddress,Session["sessionId"].ToString(),Session["employeeId"].ToString(),null,string.Format("Entro Cuenta {0}",Session["user_name"]),string.Format("Entro Expediente Cuenta {0}",Session["employeeId"])));
 					Response.Redirect("/gestion/portal/index.aspx?uid=" + nUserID + "");
 				}
 				else {
@@ -63,7 +63,7 @@
 			}
 			else
 			{
-				ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(nUserID, "Pantalla Login", enuAction.UserNotExist.GetDescription(), string.Empty, string.Empty,Request.UserHostAddress,string.Empty,string.Empty));
+				ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(nUserID, "Pantalla Login", enuAction.UserNotExist.GetDescription(), string.Empty, string.Empty,Request.UserHostAddress,string.Empty,string.Empty,null,string.Format("Cuenta no encontrada: {0}",email.Text)));
 			}
 		}
 		catch (Exception ex)

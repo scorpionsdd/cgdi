@@ -25,11 +25,11 @@ namespace Gestion.gestion.seguridad
         List<Log.Layer.Model.Model.Enumerator.enuAction> _action = Enum.GetValues(typeof(Log.Layer.Model.Model.Enumerator.enuAction)).Cast<Log.Layer.Model.Model.Enumerator.enuAction>().ToList();
         List<LogSystemType> _logType = new List<LogSystemType>
             {
-                new LogSystemType { Type = "0", Description = "Todo", Module = new List<string>(), Action = new List<string>() },
-                new LogSystemType { Type = "1", Description = "Bitácora de la Gestión de Usuarios", Module = new List<string> { "Pantalla Vista de Empleados" }, Action = new List<string>() },
-                new LogSystemType { Type = "2", Description = "Bitácora de la Gestión de Perfiles", Module = new List<string> { "Pantalla Vista de Recibidos", "Pantalla Vista de Enviados" }, Action = new List<string>() },
-                new LogSystemType { Type = "3", Description = "Bitácora de Acceso Exitoso", Module = new List<string> { "Pantalla Login" }, Action = new List<string> { "Acceso a Sistema" } },
-                new LogSystemType { Type = "4", Description = "Bitácora de Intento de Acceso No Exitoso", Module = new List<string> { "Pantalla Login" }, Action = new List<string> { "Acceso a Sistema Fallido", "No Existe Usuario" } }
+                new LogSystemType { Type = "0", Description = "Todo", Module = new List<string>(), Action = new List<string>() ,ColumnRemove=new List<string>(), ColumnAddtitional=new List<string>(), ColumnAddtitionalTitle=new List<string>()},
+                new LogSystemType { Type = "1", Description = "Bitácora de la Gestión de Usuarios", Module = new List<string> { "Pantalla Vista de Empleados" }, Action = new List<string>() , ColumnRemove=new List<string>(), ColumnAddtitional=new List<string>{ "Campo 1","Campo 2"}, ColumnAddtitionalTitle=new List<string>{ "Cuenta sobre la que se hizo el cambio", "Expediente sobre la que se hizo el cambio" } },
+                new LogSystemType { Type = "2", Description = "Bitácora de la Gestión de Perfiles", Module = new List<string> { "Pantalla Lista de Roles" }, Action = new List<string>() , ColumnRemove=new List<string>(), ColumnAddtitional=new List<string>{ "Campo 1","Campo 2"}, ColumnAddtitionalTitle=new List<string>{ "Rol involucrado", "Usuario involucrado" }},
+                new LogSystemType { Type = "3", Description = "Bitácora de Acceso Exitoso", Module = new List<string> { "Pantalla Login" }, Action = new List<string> { "Acceso a Sistema" }, ColumnRemove=new List<string>{ "Campo 2" }, ColumnAddtitional=new List<string>{ "Campo 1"}, ColumnAddtitionalTitle=new List<string>{ "Usuario involucrado"} },
+                new LogSystemType { Type = "4", Description = "Bitácora de Intento de Acceso No Exitoso", Module = new List<string> { "Pantalla Login" }, Action = new List<string> { "Acceso a Sistema Fallido", "No Existe Usuario" }, ColumnRemove=new List<string>{ "Campo 2" }, ColumnAddtitional=new List<string>{ "Campo 1"}, ColumnAddtitionalTitle=new List<string>{ "Error"} }
             };
         #region EVENTOS
         protected void Page_Load(object sender, EventArgs e)
@@ -347,6 +347,10 @@ namespace Gestion.gestion.seguridad
             {
                 if (!string.IsNullOrEmpty(txtDesde.Text)) result.DateTimeEventFrom = Convert.ToDateTime(txtDesde.Text);
                 if (!string.IsNullOrEmpty(txtHasta.Text)) result.DateTimeEventTo = Convert.ToDateTime(txtHasta.Text);
+                if (string.IsNullOrEmpty(txtDesde.Text)&& string.IsNullOrEmpty(txtHasta.Text))
+                {
+                    result.DateTimeEventFrom = DateTime.Now.AddDays(-1);
+                }
                 if (result.DateTimeEventFrom.HasValue && result.DateTimeEventTo.HasValue)
                 {
                     if (result.DateTimeEventFrom.Value > result.DateTimeEventTo.Value)
@@ -370,11 +374,14 @@ namespace Gestion.gestion.seguridad
             System.IO.StringWriter sw = new System.IO.StringWriter();
             HtmlTextWriter htw = new HtmlTextWriter(sw);
             var dt = ViewState["dt"] as DataTable;
-            List<string> colEnglish = new List<string>() { "LOGID", "USERID", "USER", "DATETIMEEVENT", "MODULE", "ACTION", "ISDB", "TABLE", "SENTENCE", "IP", "METADATA", "SESSIONID", "EXPEDIENT" };
-            List<string> colSpanish = new List<string>() { "BITACORAID", "USUARIOID", "USUARIO", "FECHA EVENTO", "PANTALLA", "ACCION", "ESBD", "TABLA", "SENTENCIA", "IP", "METADATO", "SESION", "EXPEDIENTE" };
+            List<string> colEnglish = new List<string>() { "LOGID", "USERID", "USER", "DATETIMEEVENT", "MODULE", "ACTION", "ISDB", "TABLE", "SENTENCE", "IP", "METADATA", "SESSIONID", "EXPEDIENT","FIELD_1", "FIELD_2" };
+            List<string> colSpanish = new List<string>() { "BITACORAID", "USUARIOID", "Nombre de Usuario", "Fecha y Hora", "Pantalla", "Descripcion", "ESBD", "TABLA", "SENTENCIA", "Direccion IP", "METADATO", "Id de Sesion", "Expediente", "Campo 1", "Campo 2" };
             List<string> colRemove = new List<string>() { "BITACORAID", "USUARIOID", "ESBD", "TABLA", "SENTENCIA", "METADATO" };
-            List<string> colOrder = new List<string>() { "USUARIO", "FECHA EVENTO", "SESION", "EXPEDIENTE", "PANTALLA", "ACCION", "IP" };
+            List<string> colOrder = new List<string>() { "Fecha y Hora", "Id de Sesion", "Expediente", "Nombre de Usuario", "Direccion IP", "Pantalla", "Descripcion"};
             var filter = _logType.FirstOrDefault(x => x.Type == cboExporta.SelectedValue);
+            
+
+            #region Encabezado
             HttpContext.Current.Response.ClearContent();
             HttpContext.Current.Response.AddHeader("content-disposition", string.Format("attachment; filename={0}.xls", Guid.NewGuid()));
             HttpContext.Current.Response.ContentType = "application/ms-excel";
@@ -390,25 +397,76 @@ namespace Gestion.gestion.seguridad
             HttpContext.Current.Response.Write("<td colspan='2'>&nbsp;</td>");
             HttpContext.Current.Response.Write("<td colspan='5' style='font: bold 18pt Arial;'>" + filter.Description + "</td>");
             HttpContext.Current.Response.Write("</tr>");
-            HttpContext.Current.Response.Write("</table>");
+            HttpContext.Current.Response.Write("</table>"); 
+            #endregion
 
             if (dt != null && dt.Rows.Count > 0)
             {
+                #region Cambia nombre de columnas
                 foreach (DataColumn dc in dt.Columns)
                 {
                     var index = colEnglish.IndexOf(dc.ColumnName);
-                    dc.ColumnName = colSpanish[index];
+                    if (index > -1)
+                    {
+                        dc.ColumnName = colSpanish[index];
+                    }
+                } 
+                #endregion
+
+                #region Agrega metadato con formato en excel
+                //foreach (DataRow dr in dt.Rows)
+                //{
+                //    var isBD = dr["ESBD"].ToString() == "1";
+                //    if (isBD)
+                //    {
+                //        var metadata = dr["METADATO"].ToString();
+                //        if (!string.IsNullOrEmpty(metadata))
+                //        {
+                //            dr["Campo 1"] = ControlLog.GetInstance().BuildMetadata(new LogSystem { Action = dr["Descripcion"].ToString(), Metadata = metadata }).result;
+
+                //        }
+                //    }
+                //} 
+                #endregion
+                #region Elimina columnas de ser el caso
+                if (filter.ColumnRemove != null && filter.ColumnRemove.Any())
+                {
+                    colRemove.AddRange(filter.ColumnRemove);
                 }
                 colRemove.ForEach(x =>
                 {
                     dt.Columns.Remove(x);
                 });
-                grid.DataSource = dt.ChangeColumnOrder(colOrder.ToArray());
+                #endregion
+                #region Agrega columnas adicionales de ser el caso
+                if (filter.ColumnAddtitional != null && filter.ColumnAddtitional.Any())
+                {
+                    colOrder.AddRange(filter.ColumnAddtitional);
+                }
+                #endregion
+                #region Reordena data para estructura excel
+                dt = dt.ChangeColumnOrder(colOrder.ToArray());
+                #endregion
+                #region MyRegion
+                if (filter.ColumnAddtitional!= null && filter.ColumnAddtitionalTitle!=null)
+                {
+                    if (filter.ColumnAddtitional.Count== filter.ColumnAddtitionalTitle.Count)
+                    {
+                        for (int i = 0; i < filter.ColumnAddtitional.Count; i++)
+                        {
+                            dt.Columns[filter.ColumnAddtitional[i]].ColumnName = filter.ColumnAddtitionalTitle[i];
+                        }
+                    }
+                }
+                #endregion
+                grid.DataSource = dt; 
             }
+            #region Cuerpo
             grid.HeaderStyle.BackColor = Color.DarkRed;
             grid.HeaderStyle.ForeColor = Color.White;
             grid.DataBind();
-            grid.RenderControl(htw);
+            grid.RenderControl(htw); 
+            #endregion
             ControlLog.GetInstance().Create(OracleHelper.ExecuteNonQuery, new LogSystem(Convert.ToInt32(Session["uid"]), "Pantalla Bitacora", enuAction.Download.GetDescription(), string.Empty, string.Empty, Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString()));
             HttpContext.Current.Response.Write(sw.ToString());
             this.Context.Response.End();

@@ -173,7 +173,7 @@ namespace Gestion.Correspondencia
 			else 
 			{
                 //MapeoRecibidos.Update JAMN ANTES
-                MapeoRegla.Update(Request.QueryString["id"].ToString(), nEmployeeId, nEmployeeBisId, Convert.ToString(Session["uid"]), Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString());
+                MapeoRecibidos.Update(Request.QueryString["id"].ToString(), nEmployeeId, nEmployeeBisId, Convert.ToString(Session["uid"]), Request.UserHostAddress, Session["sessionId"].ToString(), Session["employeeId"].ToString());
 			}
 
 		}
